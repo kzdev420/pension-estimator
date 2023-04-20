@@ -1,0 +1,25 @@
+input.form-control {
+  border-radius: 0;
+  border: 2px solid $inactive-color;
+  border-bottom-left-radius: 0.5rem;
+  &:focus, &:active, &:hover {
+    border-color: $active-color;
+    color: $active-color;
+  }
+  width: 330px;
+  @include media-breakpoint-down(sm) {
+    width: 100%;
+  }
+  &.small {
+    width: 102px;
+  }
+  &.medium {
+    width: 202px;
+  }
+  &:disabled {
+    background-color: white;
+  }
+}
+.invalid-feedback {
+  display: block;
+}

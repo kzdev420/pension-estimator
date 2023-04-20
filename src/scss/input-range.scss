@@ -1,0 +1,27 @@
+.range-slider-container {
+  width: 330px;
+  .range-slider.single-thumb {
+    height: 4px;
+    .range-slider__thumb[data-lower] {
+      width: 0;
+      display: none;
+    }
+    .range-slider__range {
+      background-color: $active-number-color;
+    }
+    .range-slider__thumb {
+      width: 20px;
+      height: 20px;
+      border: 2px solid $active-number-color;
+      background-color: white;
+    }
+  }
+  .range-slider[data-disabled] {
+    .range-slider__range {
+      background-color: $inactive-color;
+    }
+    .range-slider__thumb {
+      border-color: $inactive-color;
+    }
+  }
+}

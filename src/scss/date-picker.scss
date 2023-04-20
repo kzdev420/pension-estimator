@@ -1,0 +1,35 @@
+.date-picker {
+  width: 330px;
+}
+.react-date-picker.dob-picker {
+  display: flex;
+  width: 330px;
+  height: 38px;
+  border: 2px solid $inactive-color;
+  border-bottom-left-radius: 0.5rem;
+  // color: $inactive-color;
+  .react-date-picker__wrapper {
+    border: 0;
+    .react-date-picker__inputGroup {
+      margin-left: 0.5rem;
+    }
+  }
+  .react-date-picker__button {
+    width: 30px;
+    background-color: $inactive-color;
+    text-align: center;
+  }
+  &.is-invalid {
+    border-color: $danger;
+    .react-date-picker__button {
+      background-color: white;
+    }
+  }
+  &:focus, &:active, &:hover {
+    border-color: $active-color;
+    color: $active-color;
+    .react-date-picker__button {
+      background-color: $active-color;
+    }
+  }
+}
