@@ -1,0 +1,40 @@
+.arrow {
+    border: solid red;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
+    margin-left: 13px;
+    cursor: pointer;
+  }
+
+  .down {
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    margin-bottom: 3px;
+  }
+
+  .up {
+    transform: rotate(-135deg);
+    -webkit-transform: rotate(-135deg);
+  }
+
+  .common_button{
+    min-width: 250px !important;
+    margin-right: 30px;
+  }
+
+  .fw-600{
+    font-weight: 600;
+  }
+
+  .top-label{
+    font-size: 12px;
+    color: #922724;
+    font-weight: 600;
+  }
+
+  .custom-class{
+    width: 23%;
+    display: flex;
+    align-items: center;
+  }

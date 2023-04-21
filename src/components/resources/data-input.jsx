@@ -5,6 +5,7 @@ import { NonBaseYearEarnings } from "./non-base-year-earnings";
 import { RetirementEligibility } from "./retirement-eligibility";
 import { GenerateEstimate } from "./generate-estimate";
 import { OneStepComponent } from "./one-step-component";
+import {EenerateEstimation} from "./generate-estimation"
 
 export const statusList = ['inactive', 'active', 'progress', 'complete'];
 const staticData = [
@@ -82,6 +83,7 @@ const getDiffYear = (date) => {
 }
 export const DataInput = () => {
   const [errorPI, setErrorPI] = useState({});
+  const [showEstimation, setEstimation] = useState(true);
   const [personalInformation, setPersonalInformation] = useState(initPersonalInformation);
   const updatePersonalInformation = (variable, value) => {
     let errMessage = '';
@@ -344,6 +346,10 @@ export const DataInput = () => {
     setStatusGE(1);
   }
 
+  const generate = (val) => {
+    setEstimation(val)
+  }
+
   return (
     <div className="data-input py-5 px-2">
       <OneStepComponent
@@ -353,6 +359,7 @@ export const DataInput = () => {
         status={statusPI}
         current={stepPI}
         steps={3}
+        showEstimation={showEstimation}
       >
         <PersonalInformation
           personalInformation={personalInformation}
@@ -368,6 +375,7 @@ export const DataInput = () => {
         status={statusBYE}
         current={stepBYE}
         steps={4}
+        showEstimation={showEstimation}
       >
         <BaseYearEarnings
           baseYearEarnings={baseYearEarnings}
@@ -383,6 +391,7 @@ export const DataInput = () => {
         status={statusNBYE}
         current={stepNBYE}
         steps={3}
+        showEstimation={showEstimation}
       >
         <NonBaseYearEarnings
           nonBaseYearEarnings={nonBaseYearEarnings}
@@ -398,6 +407,7 @@ export const DataInput = () => {
         status={statusRE}
         current={stepRE}
         steps={3}
+        showEstimation={showEstimation}
       >
         <RetirementEligibility
           retirementEligibility={retirementEligibility}
@@ -413,15 +423,26 @@ export const DataInput = () => {
         status={statusGE}
         current={stepGE}
         steps={1}
+        showEstimation={showEstimation}
         noLine
       >
         <GenerateEstimate
           generateEstimate={generateEstimate}
           handleChange={updateGenerateEstimate}
           handleFocus={updateStatusGE}
+          generate={() => generate(false)}
           error={errorGE}
         />
       </OneStepComponent>
+      <EenerateEstimation 
+      personalData={personalInformation} 
+      baseYearEarnings={baseYearEarnings}
+      nonBaseYearEarnings={nonBaseYearEarnings}
+      retirementEligibility={retirementEligibility}
+      generateEstimate={generateEstimate}
+      generate={() => generate(true)} 
+      showEstimation={showEstimation} 
+      handleChange={updateBaseYearEarnings}/>
     </div>
   );
 };

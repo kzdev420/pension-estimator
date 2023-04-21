@@ -12,6 +12,7 @@ export const OneStepComponent = (props) => {
     steps,
     noLine,
     children,
+    showEstimation
   } = props;
 
   const oneHeight = steps ? 100/steps : 100;
@@ -32,7 +33,7 @@ export const OneStepComponent = (props) => {
   };
 
   return (
-    <div className={`one-step ${statusList[status]}`}>
+    <div className={`one-step ${statusList[status]} ${showEstimation ? '' : 'd-none'}`}>
       <div className="d-flex">
         <div className="step-number-container me-3">
           <div className="step-number">
