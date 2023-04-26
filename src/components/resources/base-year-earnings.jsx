@@ -5,7 +5,8 @@ export const BaseYearEarnings = (props) => {
     baseYearEarnings,
     error,
     handleChange,
-    handleFocus
+    handleFocus,
+    disabled
   } = props;
 
   return (
@@ -22,6 +23,7 @@ export const BaseYearEarnings = (props) => {
               onChange={(e) => handleChange(index, 'year', e.target.value)}
               onFocus={handleFocus}
               isInvalid={error[index]?.year}
+              disabled={disabled}
             />
             <Form.Control.Feedback type="invalid">
               {error[index]?.year}
@@ -38,6 +40,7 @@ export const BaseYearEarnings = (props) => {
               onChange={(e) => handleChange(index, 'earning', e.target.value)}
               onFocus={handleFocus}
               isInvalid={error[index]?.earning}
+              disabled={disabled}
             />
             <Form.Control.Feedback type="invalid">
               {error[index]?.earning}

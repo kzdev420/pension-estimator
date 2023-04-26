@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Form, Button, Collapse, Card } from "react-bootstrap";
 
+import { calculations } from '../../utils/calculations';
+
 export const EenerateEstimation = (props) => {
     const {
         showEstimation,
@@ -13,10 +15,26 @@ export const EenerateEstimation = (props) => {
     } = props;
 
     const [moreDetails, setMoreDetails] = useState(false)
+    const [customBaseYear, setCustomBaseYear] = useState(new Date().getFullYear())
+    const [customBaseError, setCustomBaseYearError] = useState()
+
+    const { aveOverYMPE, aveUnderYMPE, nonBasePeriodOver, nonBasePeriodUnder, maxBaseYear } = calculations(personalData, baseYearEarnings, nonBaseYearEarnings, generateEstimate.estimatedRetirementDate);
 
     const showMoreDetails = () => {
         setMoreDetails(!moreDetails);
     }
+
+    const handleChangeCustomBaseYear = (e) => {
+        e.preventDefault()
+
+        setCustomBaseYearError("");
+        if(e.target.value > maxBaseYear || e.target.value < new Date().getFullYear()) {
+            setCustomBaseYearError("Must be within current and max base year")
+        }
+        setCustomBaseYear(e.target.value);
+    }
+
+    const cred = Math.abs(customBaseYear - new Date().getFullYear())
 
     return (
         <div className={`container ${showEstimation ? 'd-none' : ''}`}>
@@ -42,13 +60,23 @@ export const EenerateEstimation = (props) => {
                     placeholder="YYYY"
                     className="small"
                     onFocus={handleFocus}
+                    onChange={e => handleChangeCustomBaseYear(e)}
+                    value={customBaseYear}
                 />
+                <Form.Control.Feedback type="invalid">
+                    {customBaseError}
+                </Form.Control.Feedback>
                 <span></span>
             </div>
             <div className='mt-4'>
-                <b className='fs-2 text-danger'>$xx,xxx.xx</b>
+                <b className='fs-2 text-danger'>$
+                {
+                    ((aveUnderYMPE * 0.004 * (parseFloat(personalData.totalCreditedService) + cred)) + (nonBasePeriodUnder * 0.004)) > (143.20 * (parseFloat(personalData.totalCreditedService) + cred))
+                    ? ((aveUnderYMPE * 0.004 * (parseFloat(personalData.totalCreditedService) + cred)) + (nonBasePeriodUnder * 0.004)).toFixed(2)
+                    : (143.20 * (parseFloat(personalData.totalCreditedService) + cred)).toFixed(2)
+                }</b>
                 <div><b>Lifetime monthly pension</b></div>
-                <div className='mt-2'>Estimated pension on [month] [day], [year] at [approximate age].</div>
+                {generateEstimate.estimatedRetirementDate && <div className='mt-2'>Estimated pension on {generateEstimate.estimatedRetirementDate.toDateString()} at {generateEstimate.estimatedRetirementDate.getFullYear() - personalData.dob.getFullYear()}.</div>}
             </div>
             <div className='my-5'>
                 <b className='fs-5'>More Details <span><i className={`arrow ${moreDetails ? 'up' : 'down'}`} onClick={() => showMoreDetails()}></i></span></b>
@@ -66,28 +94,25 @@ export const EenerateEstimation = (props) => {
                                 <div className='row'>
                                     <div className='col-2 custom-class'>
                                         <div className='me-5'><span className='top-label'>Average earnings up to YMPE X1.6%</span>
-                                            <div>$59,075 × 1.6% = $945.20</div>
+                                            <div>$ {aveUnderYMPE} × 1.6% = ${(aveUnderYMPE * 0.016).toFixed(2)}</div>
                                         </div>
                                         <span className='fs-3'>+</span>
                                     </div>
                                     <div className='col-2 custom-class'>
                                         <div className='me-5'><span className='top-label'>Average earnings above YMPE'× 2%</span>
-                                            <div>$39,432.14
-                                                * 2%
-                                                $788.64
-                                            </div>
+                                            <div>${aveOverYMPE} * 2% = ${(aveOverYMPE * 0.02).toFixed(2)}</div>
                                         </div>
                                         <span className='fs-3'>x</span>
                                     </div>
                                     <div className='col-2 custom-class'>
                                         <div className='me-5'><span className='top-label'>Credited service up to base year</span>
-                                            <div>21.18 years</div>
+                                            <div>{(parseFloat(personalData.totalCreditedService) + cred).toFixed(2)} years</div>
                                         </div>
                                         <span className='fs-3'>=</span>
                                     </div>
                                     <div className='col-2 custom-class'>
                                         <div className='me-5'><span className='top-label'>Credited service up to base year</span>
-                                            <div>21.18 years</div>
+                                            <div>${(((aveUnderYMPE * 0.016) + (aveOverYMPE * 0.02)) * (parseFloat(personalData.totalCreditedService) + cred)).toFixed(2)}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -104,19 +129,19 @@ export const EenerateEstimation = (props) => {
                                 <div className='row'>
                                     <div className='col-2 custom-class'>
                                         <div className='me-5'><span className='top-label'>Sum of earnings to to YMPE x 1.6%</span>
-                                            <div>$133,719.96 * 1.6% = $2,139.52</div>
+                                            <div>${nonBasePeriodUnder} * 1.6% = ${(nonBasePeriodUnder * 0.016).toFixed(2)}</div>
                                         </div>
                                         <span className='fs-3'>+</span>
                                     </div>
                                     <div className='col-2 custom-class'>
                                         <div className='me-5'><span className='top-label'>Sum of earnings above YMPE × 2%</span>
-                                            <div>$133,719.96 x 2% = $1.305.52</div>
+                                            <div>${nonBasePeriodOver} x 2% = ${(nonBasePeriodOver * 0.02).toFixed(2)}</div>
                                         </div>
                                         <span className='fs-3'>=</span>
                                     </div>
                                     <div className='col-2 custom-class'>
                                         <div className='me-5'><span className='top-label'>Non-base sum</span>
-                                            <div>$3.445.03</div>
+                                            <div>${((nonBasePeriodUnder * 0.016) + (nonBasePeriodOver * 0.02)).toFixed(2)}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -128,19 +153,19 @@ export const EenerateEstimation = (props) => {
                         <div className='row'>
                             <div className='col-4 d-flex justify-content-center text-center'>
                                 <div className='me-5'><span className='top-label fs-4'>Base Period</span>
-                                    <div className='fs-3 fw-600'>$36,722.80</div>
+                                    <div className='fs-3 fw-600'>${(((aveUnderYMPE * 0.016) + (aveOverYMPE * 0.02)) * (parseFloat(personalData.totalCreditedService) + cred)).toFixed(2)}</div>
                                     <div className='fw-600 fs-5'>x 0.814</div>
                                 </div>
                             </div>
                             <div className='col-4 d-flex justify-content-center text-center'>
                                 <div className='me-5'><span className='top-label fs-4'>Non-base Period</span>
-                                    <div className='fs-3 fw-600'>$3,445.03</div>
+                                    <div className='fs-3 fw-600'>${((nonBasePeriodUnder * 0.016) + (nonBasePeriodOver * 0.02)).toFixed(2)}</div>
                                     <div className='fw-600 fs-5'>x 0.814</div>
                                 </div>
                             </div>
                             <div className='col-4 d-flex justify-content-center text-center'>
                                 <div className='me-5'><span className='top-label fs-4'>Annual pension</span>
-                                    <div className='fs-3 fw-600'>$40,167.83</div>
+                                    <div className='fs-3 fw-600'>${(((((aveUnderYMPE * 0.016) + (aveOverYMPE * 0.02)) * (parseFloat(personalData.totalCreditedService) + cred)) + ((nonBasePeriodUnder * 0.016) + (nonBasePeriodOver * 0.02))) * 0.814).toFixed(2)}</div>
                                 </div>
                             </div>
                         </div>
@@ -172,22 +197,20 @@ export const EenerateEstimation = (props) => {
                                         <div className='col-2 custom-class'>
                                             <div className='me-5'><span className='top-label'>Average or your best four years of earnings up to the average YMPE in the same four years
                                             </span>
-                                                <div>$59,075.00
-                                                </div>
+                                                <div>${aveUnderYMPE}</div>
                                             </div>
                                             <span className='fs-3'>x</span>
                                         </div>
                                         <div className='col-2 custom-class'>
                                             <div className='me-5'><span className='top-label'>Credited service up to base year</span>
-                                                <div>21.18 years</div>
+                                                <div>{(parseFloat(personalData.totalCreditedService) + cred)} years</div>
                                             </div>
                                             <span className='fs-3'>=</span>
                                         </div>
                                         <div className='col-2 custom-class'>
                                             <div className='me-5'><span className='top-label'>End of base period results
                                             </span>
-                                                <div>55,004.83
-                                                </div>
+                                                <div>${(aveUnderYMPE * 0.004 * (parseFloat(personalData.totalCreditedService) + cred)).toFixed(2)}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -207,13 +230,13 @@ export const EenerateEstimation = (props) => {
                                         </div>
                                         <div className='col-2 custom-class'>
                                             <div className='me-5'><span className='top-label'>Sum of the earnings up to the YMPE</span>
-                                                <div>$133,719.96</div>
+                                                <div>${nonBasePeriodUnder}</div>
                                             </div>
                                             <span className='fs-3'>=</span>
                                         </div>
                                         <div className='col-2 custom-class'>
                                             <div className='me-5'><span className='top-label'>After base period results</span>
-                                                <div>$534.88</div>
+                                                <div>${(nonBasePeriodUnder * 0.004).toFixed(2)}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -226,19 +249,19 @@ export const EenerateEstimation = (props) => {
                                     <div className='row'>
                                         <div className='col-2 custom-class'>
                                             <div className='me-5'><span className='top-label'>End of base period results</span>
-                                                <div>$5,004.83</div>
+                                                <div>${(aveUnderYMPE * 0.004 * (parseFloat(personalData.totalCreditedService) + cred)).toFixed(2)}</div>
                                             </div>
                                             <span className='fs-3'>+</span>
                                         </div>
                                         <div className='col-2 custom-class'>
                                             <div className='me-5'><span className='top-label'>After base period results</span>
-                                                <div>$534.88</div>
+                                                <div>${(nonBasePeriodUnder * 0.004).toFixed(2)}</div>
                                             </div>
                                             <span className='fs-3'>=</span>
                                         </div>
                                         <div className='col-2 custom-class'>
                                             <div className='me-5'><span className='top-label'>Total Formula 1</span>
-                                                <div>$5,539.71</div>
+                                                <div>${((aveUnderYMPE * 0.004 * (parseFloat(personalData.totalCreditedService) + cred)) + (nonBasePeriodUnder * 0.004)).toFixed(2)}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -263,13 +286,13 @@ export const EenerateEstimation = (props) => {
                                         </div>
                                         <div className='col-2 custom-class'>
                                             <div className='me-5'><span className='top-label'>Total years of credited service</span>
-                                                <div>23.10 years</div>
+                                                <div>{(parseFloat(personalData.totalCreditedService) + cred).toFixed(2)} years</div>
                                             </div>
                                             <span className='fs-3'>=</span>
                                         </div>
                                         <div className='col-2 custom-class'>
                                             <div className='me-5'><span className='top-label'>Minimum bridge factor results</span>
-                                                <div>$3,307.61</div>
+                                                <div>${(143.20 * (parseFloat(personalData.totalCreditedService) + cred)).toFixed(2)}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -282,20 +305,26 @@ export const EenerateEstimation = (props) => {
                             <div className='row'>
                                 <div className='col-4 d-flex justify-content-center text-center'>
                                     <div className='me-5'><span className='top-label fs-4'>Formula 1</span>
-                                        <div className='fs-3 fw-600'>$5,539.71</div>
-                                        <div className='fw-600 fs-5'>× 0.499842*</div>
+                                        <div className='fs-3 fw-600'>${((aveUnderYMPE * 0.004 * (parseFloat(personalData.totalCreditedService) + cred)) + (nonBasePeriodUnder * 0.004)).toFixed(2)}</div>
                                     </div>
                                     <span className='fs-3 d-flex justify-content-center text-center'>{'>'}</span>
                                 </div>
                                 <div className='col-4 d-flex justify-content-center text-center'>
                                     <div className='me-5'><span className='top-label fs-4'>Formula 2</span>
-                                        <div className='fs-3 fw-600'>$3,307.61</div>
+                                        <div className='fs-3 fw-600'>${(143.20 * (parseFloat(personalData.totalCreditedService) + cred)).toFixed(2)}</div>
                                     </div>
                                     <span className='fs-3 d-flex justify-content-center text-center'>=</span>
                                 </div>
                                 <div className='col-4 d-flex justify-content-center text-center'>
                                     <div className='me-5'><span className='top-label fs-4'>Bridge Benefit</span>
-                                        <div className='fs-3 fw-600'>$5,539.71</div>
+                                        <div className='fs-3 fw-600'>
+                                            $
+                                            {
+                                                ((aveUnderYMPE * 0.004 * (parseFloat(personalData.totalCreditedService) + cred)) + (nonBasePeriodUnder * 0.004)) > (143.20 * (parseFloat(personalData.totalCreditedService) + cred))
+                                                ? ((aveUnderYMPE * 0.004 * (parseFloat(personalData.totalCreditedService) + cred)) + (nonBasePeriodUnder * 0.004)).toFixed(2)
+                                                : (143.20 * (parseFloat(personalData.totalCreditedService) + cred)).toFixed(2)
+                                            }
+                                        </div>
                                     </div>
                                 </div>
                             </div>

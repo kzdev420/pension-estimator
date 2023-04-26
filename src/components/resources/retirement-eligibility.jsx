@@ -27,6 +27,7 @@ export const RetirementEligibility = (props) => {
           onChange={(v) => handleChange('earliestReducedRetirementDate', v)}
           onFocus={handleFocus}
           value={retirementEligibility.earliestReducedRetirementDate}
+          disabled
         />
         <Form.Control.Feedback type="invalid">
           {error?.earliestReducedRetirementDate}
@@ -35,6 +36,7 @@ export const RetirementEligibility = (props) => {
       <Form.Group className="mb-3">
         <Form.Label>Earliest unreduced retirement date</Form.Label>
         <DatePicker
+          disabled
           className={`dob-picker ${error?.earliestUnReducedRetirementDate ? 'is-invalid' : ''}`}
           clearIcon={null}
           calendarClassName="dob-picker-calander"
@@ -55,6 +57,7 @@ export const RetirementEligibility = (props) => {
       <Form.Group className="mb-3">
         <Form.Label>Compulsory pension start date</Form.Label>
         <DatePicker
+          disabled
           className={`dob-picker ${error?.compulsoryPensionStartDate ? 'is-invalid' : ''}`}
           clearIcon={null}
           calendarClassName="dob-picker-calander"

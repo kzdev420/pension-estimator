@@ -8,14 +8,16 @@ export const GenerateEstimate = (props) => {
     error,
     handleChange,
     handleFocus,
-    generate
+    generate,
+    disabled
   } = props;
 
   return (
     <>
       <Form.Group className="mb-3">
-        <Form.Label>Earliest reduced retirement date</Form.Label>
+        <Form.Label>Estimated date of retirement</Form.Label>
         <DatePicker
+          disabled={disabled}
           className={`dob-picker ${error?.estimatedRetirementDate ? 'is-invalid' : ''}`}
           clearIcon={null}
           calendarClassName="dob-picker-calander"
@@ -35,6 +37,7 @@ export const GenerateEstimate = (props) => {
       </Form.Group>
       <Button
         variant="danger"
+        disabled={disabled}
         onClick={generate}
       >
         Generate Estimate

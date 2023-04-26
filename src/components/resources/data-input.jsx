@@ -5,72 +5,20 @@ import { NonBaseYearEarnings } from "./non-base-year-earnings";
 import { RetirementEligibility } from "./retirement-eligibility";
 import { GenerateEstimate } from "./generate-estimate";
 import { OneStepComponent } from "./one-step-component";
-import {EenerateEstimation} from "./generate-estimation"
+import { EenerateEstimation } from "./generate-estimation";
+
+import { calcRetirementEligibility } from "../../utils/calculations";
+import { 
+  YMPE,
+  staticData,
+  initBaseYearEarnings,
+  initGenerateEstimate,
+  initNonBaseYearEarnings,
+  initPersonalInformation,
+  initRetirementEligibility
+} from "../../utils/data";
 
 export const statusList = ['inactive', 'active', 'progress', 'complete'];
-const staticData = [
-  {
-    title: 'Personal<br/>Information',
-    description: 'You can find the credited and continuous service on the second page of your Annual Statement. Your credited service is the length of time during which you have contributed to the plan, while your continuous service is the total length of time you have been employed.',
-  },
-  {
-    title: 'Best Four-Year<br/>Earnings to Base Year',
-    description: 'Your best four years are on the second page of your Annual Statement. Your pensionable earnings include your regular base salary plus earnings on which you make pension contributions. These earnings do not include tool allowance, most settlements, Ontario health premiums, refunds, or shortage allowances.',
-  },
-  {
-    title: 'Non-Base<br/>Year Earnings',
-    description: 'Complete the second and third fields by making some assumptions about your future pensionable earnings and annual salary increase. Your non-base year is on the second page of your Annual Statement.',
-  },
-  {
-    title: 'Retirement<br/>Eligibility',
-    description: 'Your retirement dates outline when you can first start collecting a reduced pension, an unreduced pension, and when you must start collecting your pension by law. These dates were estimated based off your inputs; you can refer to your Annual Statement for your actual dates.',
-  },
-  {
-    title: 'Generate<br/>Estimate',
-    description: '',
-  },
-];
-
-const initPersonalInformation = {
-  dob: '',
-  totalCreditedService: '',
-  totalContinuousService: '',
-};
-
-const initBaseYearEarnings = [
-  {
-    year: '',
-    earning: '',
-  },
-  {
-    year: '',
-    earning: '',
-  },
-  {
-    year: '',
-    earning: '',
-  },
-  {
-    year: '',
-    earning: '',
-  },
-];
-
-const initNonBaseYearEarnings = {
-  currentPensionableEarnings: '',
-  estimatedYearPensionableEarnings: '',
-  estimatedAnnualSalaryIncrease: 0,
-};
-
-const initRetirementEligibility = {
-  earliestReducedRetirementDate: '',
-  earliestUnReducedRetirementDate: '',
-  compulsoryPensionStartDate: '',
-};
-
-const initGenerateEstimate= {
-  estimatedRetirementDate: '',
-};
 
 const baseYear = (new Date()).getFullYear() - 1;
 const MAX_EARNING = 500000;
@@ -85,46 +33,6 @@ export const DataInput = () => {
   const [errorPI, setErrorPI] = useState({});
   const [showEstimation, setEstimation] = useState(true);
   const [personalInformation, setPersonalInformation] = useState(initPersonalInformation);
-  const updatePersonalInformation = (variable, value) => {
-    let errMessage = '';
-    const newData = {
-      ...personalInformation
-    };
-    newData[variable] = value;
-    setPersonalInformation(newData);
-    switch(variable) {
-      case 'dob':
-        if (getDiffYear(value) < 17) {
-          errMessage = 'Must be earlier than 17 years as of today.';
-        } else if ((new Date()).getFullYear() -new Date(value).getFullYear() >= 71) {
-          errMessage = `No later than Dec 31 of ${(new Date()).getFullYear() - 71}`;
-        }
-        setErrorPI({
-          ...errorPI,
-          dob: errMessage
-        });
-        break;
-      case 'totalCreditedService':
-        if (personalInformation.totalContinuousService && value > personalInformation.totalContinuousService - 0.5 ) {
-          errMessage = 'Must be less than continuous service - .5 years.';
-        }
-        setErrorPI({
-          ...errorPI,
-          totalCreditedService: errMessage
-        });
-        break;
-      case 'totalContinuousService':
-        if (value && personalInformation.totalCreditedService > value - 0.5 ) {
-          errMessage = 'Must be less than continuous service - .5 years.';
-        }
-        setErrorPI({
-          ...errorPI,
-          totalCreditedService: errMessage
-        });
-        break;
-      default:
-    }
-  };
 
   const [stepPI, setStepPI] = useState(0);
   useEffect(() => {
@@ -147,11 +55,17 @@ export const DataInput = () => {
   const [baseYearEarnings, setBaseYearEarnings] = useState(initBaseYearEarnings);
   const [errorBYE, setErrorBYE] = useState(new Array(4).fill({}));
   const updateBaseYearEarnings = (index, variable, value) => {
-    const newData = JSON.parse(JSON.stringify(baseYearEarnings));
+    const newData = baseYearEarnings
     newData[index][variable] = value;
-    setBaseYearEarnings(newData);
+    newData[index] = {
+      ...newData[index],
+      'underYMPE': parseFloat(Math.min(YMPE[newData[index].year], newData[index].earning)).toFixed(2),
+      'overYMPE': parseFloat(Math.abs(YMPE[newData[index].year] - newData[index].earning)).toFixed(2)
+    }
+    setBaseYearEarnings([...newData]);
     let errMessage = '';
     const newError = JSON.parse(JSON.stringify(errorBYE));
+    
     switch(variable) {
       case 'year':
         if (value >= baseYear) {
@@ -240,7 +154,7 @@ export const DataInput = () => {
   }
 
   const [retirementEligibility, setRetirementEligibility] = useState(initRetirementEligibility);
-    const updateRetirementEligibility = (variable, value) => {
+  const updateRetirementEligibility = (variable, value) => {
     const newData = {
       ...retirementEligibility
     };
@@ -248,43 +162,57 @@ export const DataInput = () => {
     setRetirementEligibility(newData);
   };
 
-  const [errorRE, setErrorRE] = useState({});
-  useEffect(() => {
-    const newError = {
-      ...errorRE
-    }
 
+  // Update Personal Information
+
+  const updatePersonalInformation = (variable, value) => {
     let errMessage = '';
-    if (retirementEligibility.earliestReducedRetirementDate) {
-      if (retirementEligibility.earliestReducedRetirementDate.getFullYear() <= baseYear) {
-        errMessage = 'Must be this calendar year or later';
-      } else if (retirementEligibility.compulsoryPensionStartDate && retirementEligibility.earliestReducedRetirementDate > retirementEligibility.compulsoryPensionStartDate) {
-        errMessage = 'Must be earlier than compulsory date';
-      }
+    const newData = {
+      ...personalInformation
+    };
+    newData[variable] = value;
+    setPersonalInformation(newData);
+    switch(variable) {
+      case 'dob':
+        if (getDiffYear(value) < 17) {
+          errMessage = 'Must be earlier than 17 years as of today.';
+        } else if ((new Date()).getFullYear() -new Date(value).getFullYear() >= 71) {
+          errMessage = `No later than Dec 31 of ${(new Date()).getFullYear() - 71}`;
+        }
+        break;
+      case 'totalCreditedService':
+        if (personalInformation.totalContinuousService && value > personalInformation.totalContinuousService - 0.5 ) {
+          errMessage = 'Must be less than continuous service - .5 years.';
+        }
+        break;
+      case 'totalContinuousService':
+        if (value && personalInformation.totalCreditedService > value - 0.5 ) {
+          errMessage = 'Must be more than credit service - .5 years.';
+        }
+        break;
+      default:
     }
-    newError['earliestReducedRetirementDate'] = errMessage;
 
-    errMessage = '';
-    if (retirementEligibility.earliestUnReducedRetirementDate) {
-      if (retirementEligibility.earliestUnReducedRetirementDate.getFullYear() <= baseYear) {
-        errMessage = 'Must be this calendar year or later';
-      } else if (retirementEligibility.compulsoryPensionStartDate && retirementEligibility.earliestUnReducedRetirementDate > retirementEligibility.compulsoryPensionStartDate) {
-        errMessage = 'Must be earlier than compulsory date';
-      }
-    }
-    newError['earliestUnReducedRetirementDate'] = errMessage;
+    setErrorPI({
+      ...errorPI,
+      [variable]: errMessage
+    });
 
-    errMessage = '';
-    if (retirementEligibility.compulsoryPensionStartDate) {
-      if (retirementEligibility.compulsoryPensionStartDate.getFullYear() <= baseYear) {
-        errMessage = 'Must be this calendar year or later';
-      }
-    }
-    newError['compulsoryPensionStartDate'] = errMessage;
+    const {
+      earliestReducedRetirementDate,
+      earliestUnReducedRetirementDate,
+      compulsoryPensionStartDate
+    } = calcRetirementEligibility(newData.totalContinuousService, newData.dob);
 
-    setErrorRE(newError);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [retirementEligibility]);
+    setRetirementEligibility({
+      ...retirementEligibility,
+      earliestReducedRetirementDate,
+      earliestUnReducedRetirementDate,
+      compulsoryPensionStartDate
+    });
+  };
+
+  const [errorRE, setErrorRE] = useState({});
 
   const [stepRE, setStepRE] = useState(0);
   useEffect(() => {
@@ -381,6 +309,7 @@ export const DataInput = () => {
           baseYearEarnings={baseYearEarnings}
           handleChange={updateBaseYearEarnings}
           handleFocus={updateStatusBYE}
+          disabled={stepPI != 3}
           error={errorBYE}
         />  
       </OneStepComponent>
@@ -397,6 +326,7 @@ export const DataInput = () => {
           nonBaseYearEarnings={nonBaseYearEarnings}
           handleChange={updateNonBaseYearEarnings}
           handleFocus={updateStatusNBYE}
+          disabled={stepBYE != 4}
           error={errorNBYE}
         />
       </OneStepComponent>
@@ -413,6 +343,7 @@ export const DataInput = () => {
           retirementEligibility={retirementEligibility}
           handleChange={updateRetirementEligibility}
           handleFocus={updateStatusRE}
+          disabled={stepNBYE != 3}
           error={errorRE}
         />
       </OneStepComponent>
@@ -431,18 +362,19 @@ export const DataInput = () => {
           handleChange={updateGenerateEstimate}
           handleFocus={updateStatusGE}
           generate={() => generate(false)}
+          disabled={stepNBYE != 3}
           error={errorGE}
         />
       </OneStepComponent>
       <EenerateEstimation 
-      personalData={personalInformation} 
-      baseYearEarnings={baseYearEarnings}
-      nonBaseYearEarnings={nonBaseYearEarnings}
-      retirementEligibility={retirementEligibility}
-      generateEstimate={generateEstimate}
-      generate={() => generate(true)} 
-      showEstimation={showEstimation} 
-      handleChange={updateBaseYearEarnings}/>
+        personalData={personalInformation} 
+        baseYearEarnings={baseYearEarnings}
+        nonBaseYearEarnings={nonBaseYearEarnings}
+        retirementEligibility={retirementEligibility}
+        generateEstimate={generateEstimate}
+        generate={() => generate(true)} 
+        showEstimation={showEstimation} 
+        handleChange={updateBaseYearEarnings}/>
     </div>
   );
 };
