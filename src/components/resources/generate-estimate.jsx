@@ -9,6 +9,8 @@ export const GenerateEstimate = (props) => {
     handleChange,
     handleFocus,
     generate,
+    handleBlur,
+    isFocus,
     disabled
   } = props;
 
@@ -18,7 +20,7 @@ export const GenerateEstimate = (props) => {
         <Form.Label>Estimated date of retirement</Form.Label>
         <DatePicker
           disabled={disabled}
-          className={`dob-picker ${error?.estimatedRetirementDate ? 'is-invalid' : ''}`}
+          className={`dob-picker ${error?.estimatedRetirementDate ? 'is-invalid' : ''} ${isFocus ? 'is-focus' : ''}`}
           clearIcon={null}
           calendarClassName="dob-picker-calander"
           calendarIcon={
@@ -28,7 +30,8 @@ export const GenerateEstimate = (props) => {
           monthPlaceholder="mm"
           yearPlaceholder="yyyy"
           onChange={(v) => handleChange('estimatedRetirementDate', v)}
-          onFocus={handleFocus}
+          onFocus={() => handleFocus('date')}
+          onBlur={handleBlur}
           value={generateEstimate.estimatedRetirementDate}
         />
         <Form.Control.Feedback type="invalid">

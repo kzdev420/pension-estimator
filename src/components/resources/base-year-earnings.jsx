@@ -25,7 +25,7 @@ export const BaseYearEarnings = (props) => {
               isInvalid={error[index]?.year}
               disabled={disabled}
             />
-            <Form.Control.Feedback type="invalid">
+            <Form.Control.Feedback type="invalid" className="base-year-check">
               {error[index]?.year}
             </Form.Control.Feedback>
           </Form.Group>
@@ -42,7 +42,7 @@ export const BaseYearEarnings = (props) => {
               isInvalid={error[index]?.earning}
               disabled={disabled}
             />
-            <Form.Control.Feedback type="invalid">
+            <Form.Control.Feedback type="invalid" className="base-year-check">
               {error[index]?.earning}
             </Form.Control.Feedback>
           </Form.Group>

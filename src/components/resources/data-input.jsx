@@ -8,7 +8,7 @@ import { OneStepComponent } from "./one-step-component";
 import { EenerateEstimation } from "./generate-estimation";
 
 import { calcRetirementEligibility } from "../../utils/calculations";
-import { 
+import {
   YMPE,
   staticData,
   initBaseYearEarnings,
@@ -32,6 +32,7 @@ const getDiffYear = (date) => {
 export const DataInput = () => {
   const [errorPI, setErrorPI] = useState({});
   const [showEstimation, setEstimation] = useState(true);
+  const [isFocus, setFocus] = useState(false);
   const [personalInformation, setPersonalInformation] = useState(initPersonalInformation);
 
   const [stepPI, setStepPI] = useState(0);
@@ -44,12 +45,19 @@ export const DataInput = () => {
   }, [personalInformation, errorPI]);
 
   const [statusPI, setStatusPI] = useState(1);
-  const updateStatusPI = () => {
+  const updateStatusPI = (val) => {
+    if (val === 'dob') {
+      setFocus(true)
+    }
     setStatusPI(1);
     setStatusBYE(stepBYE === 4 ? 2 : 0);
     setStatusNBYE(stepNBYE === 3 ? 2 : 0);
     setStatusRE(stepRE === 3 ? 2 : 0);
     setStatusGE(stepGE === 1 ? 2 : 0);
+  }
+
+  const handleBlur = () => {
+    setFocus(false)
   }
 
   const [baseYearEarnings, setBaseYearEarnings] = useState(initBaseYearEarnings);
@@ -65,24 +73,38 @@ export const DataInput = () => {
     setBaseYearEarnings([...newData]);
     let errMessage = '';
     const newError = JSON.parse(JSON.stringify(errorBYE));
-    
-    switch(variable) {
+
+    switch (variable) {
       case 'year':
         if (value >= baseYear) {
           errMessage = 'Must be up to or before statement base year.';
         }
         if (baseYearEarnings.some(({ year }, i) => i !== index && year === value)) {
           errMessage = 'All years must be unique';
+          newError[index][variable] = errMessage;
+        } else if (baseYearEarnings.indexOf(({ year }) => year === value)) {
+          errMessage = '';
+          newError[index][variable] = errMessage;
+          for (let i = 0; i < baseYearEarnings.length - 1; i++) {
+            for (let j = i + 1; j < baseYearEarnings.length; j++) {
+              if (baseYearEarnings[i]['year'] !== '' && baseYearEarnings[i]['year'] === baseYearEarnings[j]['year']) {
+                errMessage = 'All years must be unique';
+                newError[j][variable] = errMessage;
+              } else {
+                newError[j][variable] = '';
+              }
+            }
+          }
         }
         break;
       case 'earning':
         if (value < 0 || value > MAX_EARNING) {
           errMessage = 'Cannot be negative, must be less than 500,000';
+          newError[index][variable] = errMessage;
         }
         break;
       default:
     }
-    newError[index][variable] = errMessage;
     setErrorBYE(newError);
   };
 
@@ -100,7 +122,7 @@ export const DataInput = () => {
     setStatusPI(stepPI === 3 ? 2 : 0);
     setStatusBYE(1);
     setStatusNBYE(stepNBYE === 3 ? 2 : 0);
-    setStatusRE(stepRE === 3 ? 2: 0);
+    setStatusRE(stepRE === 3 ? 2 : 0);
     setStatusGE(stepGE === 1 ? 2 : 0);
   }
 
@@ -108,7 +130,7 @@ export const DataInput = () => {
   const [errorNBYE, setErrorNBYE] = useState({});
   const updateNonBaseYearEarnings = (variable, value) => {
     let errMessage = '';
-    switch(variable) {
+    switch (variable) {
       case 'currentPensionableEarnings':
       case 'estimatedYearPensionableEarnings':
         if (value < 0 || value > MAX_EARNING) {
@@ -116,7 +138,7 @@ export const DataInput = () => {
         }
         break;
       case 'estimatedAnnualSalaryIncrease':
-        if (value < 0) 
+        if (value < 0)
           value = 0;
         else if (value > 5)
           value = 5;
@@ -149,7 +171,7 @@ export const DataInput = () => {
     setStatusPI(stepPI === 3 ? 2 : 0);
     setStatusBYE(stepBYE === 4 ? 2 : 0);
     setStatusNBYE(1);
-    setStatusRE(stepRE === 3 ? 2: 0);
+    setStatusRE(stepRE === 3 ? 2 : 0);
     setStatusGE(stepGE === 1 ? 2 : 0);
   }
 
@@ -172,21 +194,22 @@ export const DataInput = () => {
     };
     newData[variable] = value;
     setPersonalInformation(newData);
-    switch(variable) {
+    setFocus(false)
+    switch (variable) {
       case 'dob':
         if (getDiffYear(value) < 17) {
           errMessage = 'Must be earlier than 17 years as of today.';
-        } else if ((new Date()).getFullYear() -new Date(value).getFullYear() >= 71) {
+        } else if ((new Date()).getFullYear() - new Date(value).getFullYear() >= 71) {
           errMessage = `No later than Dec 31 of ${(new Date()).getFullYear() - 71}`;
         }
         break;
       case 'totalCreditedService':
-        if (personalInformation.totalContinuousService && value > personalInformation.totalContinuousService - 0.5 ) {
+        if (personalInformation.totalContinuousService && value > personalInformation.totalContinuousService - 0.5) {
           errMessage = 'Must be less than continuous service - .5 years.';
         }
         break;
       case 'totalContinuousService':
-        if (value && personalInformation.totalCreditedService > value - 0.5 ) {
+        if (value && personalInformation.totalCreditedService > value - 0.5) {
           errMessage = 'Must be more than credit service - .5 years.';
         }
         break;
@@ -266,7 +289,10 @@ export const DataInput = () => {
   }, [generateEstimate, errorGE]);
 
   const [statusGE, setStatusGE] = useState(0);
-  const updateStatusGE = () => {
+  const updateStatusGE = (val) => {
+    if (val === 'date') {
+      setFocus(true)
+    }
     setStatusPI(stepPI === 3 ? 2 : 0);
     setStatusBYE(stepBYE === 4 ? 2 : 0);
     setStatusNBYE(stepNBYE === 3 ? 2 : 0);
@@ -292,7 +318,9 @@ export const DataInput = () => {
         <PersonalInformation
           personalInformation={personalInformation}
           handleChange={updatePersonalInformation}
-          handleFocus={updateStatusPI}
+          handleFocus={(v) => updateStatusPI(v)}
+          handleBlur={handleBlur}
+          isFocus={isFocus}
           error={errorPI}
         />
       </OneStepComponent>
@@ -311,7 +339,7 @@ export const DataInput = () => {
           handleFocus={updateStatusBYE}
           disabled={stepPI != 3}
           error={errorBYE}
-        />  
+        />
       </OneStepComponent>
       <OneStepComponent
         index={3}
@@ -360,21 +388,23 @@ export const DataInput = () => {
         <GenerateEstimate
           generateEstimate={generateEstimate}
           handleChange={updateGenerateEstimate}
-          handleFocus={updateStatusGE}
+          handleFocus={(v) => updateStatusGE(v)}
+          handleBlur={handleBlur}
+          isFocus={isFocus}
           generate={() => generate(false)}
           disabled={stepNBYE != 3}
           error={errorGE}
         />
       </OneStepComponent>
-      <EenerateEstimation 
-        personalData={personalInformation} 
+      <EenerateEstimation
+        personalData={personalInformation}
         baseYearEarnings={baseYearEarnings}
         nonBaseYearEarnings={nonBaseYearEarnings}
         retirementEligibility={retirementEligibility}
         generateEstimate={generateEstimate}
-        generate={() => generate(true)} 
-        showEstimation={showEstimation} 
-        handleChange={updateBaseYearEarnings}/>
+        generate={() => generate(true)}
+        showEstimation={showEstimation}
+        handleChange={updateBaseYearEarnings} />
     </div>
   );
 };

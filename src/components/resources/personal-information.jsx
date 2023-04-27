@@ -9,14 +9,16 @@ export const PersonalInformation = (props) => {
     personalInformation,
     error,
     handleChange,
-    handleFocus
+    handleFocus,
+    handleBlur,
+    isFocus
   } = props;
   return (
     <>
       <Form.Group className="mb-3">
         <Form.Label>Date of birth</Form.Label>
         <DatePicker
-          className={`dob-picker ${error?.dob ? 'is-invalid' : ''}`}
+          className={`dob-picker ${error?.dob ? 'is-invalid' : ''} ${isFocus ? 'is-focus' : ''}`}
           clearIcon={null}
           calendarClassName="dob-picker-calander"
           calendarIcon={
@@ -27,7 +29,8 @@ export const PersonalInformation = (props) => {
           yearPlaceholder="yyyy"
           maxDate={new Date()}
           onChange={(v) => handleChange('dob', v)}
-          onFocus={handleFocus}
+          onFocus={() => handleFocus('dob')}
+          onBlur={handleBlur}
           value={personalInformation.dob}
         />
         <Form.Control.Feedback type="invalid">
@@ -41,7 +44,7 @@ export const PersonalInformation = (props) => {
           placeholder="0.000"
           value={personalInformation.totalCreditedService}
           onChange={(e) => handleChange('totalCreditedService', e.target.value)}
-          onFocus={handleFocus}
+          onFocus={() => handleFocus('credit')}
           isInvalid={error.totalCreditedService}
         />
         <Form.Control.Feedback type="invalid">
