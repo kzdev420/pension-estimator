@@ -28,7 +28,7 @@ export const EenerateEstimation = (props) => {
         e.preventDefault()
 
         setCustomBaseYearError("");
-        if(e.target.value > maxBaseYear || e.target.value < new Date().getFullYear()) {
+        if (e.target.value > maxBaseYear || e.target.value < new Date().getFullYear()) {
             setCustomBaseYearError("Must be within current and max base year")
         }
         setCustomBaseYear(e.target.value);
@@ -70,11 +70,11 @@ export const EenerateEstimation = (props) => {
             </div>
             <div className='mt-4'>
                 <b className='fs-2 text-danger'>$
-                {
-                    ((aveUnderYMPE * 0.004 * (parseFloat(personalData.totalCreditedService) + cred)) + (nonBasePeriodUnder * 0.004)) > (143.20 * (parseFloat(personalData.totalCreditedService) + cred))
-                    ? ((aveUnderYMPE * 0.004 * (parseFloat(personalData.totalCreditedService) + cred)) + (nonBasePeriodUnder * 0.004)).toFixed(2)
-                    : (143.20 * (parseFloat(personalData.totalCreditedService) + cred)).toFixed(2)
-                }</b>
+                    {
+                        ((aveUnderYMPE * 0.004 * (parseFloat(personalData.totalCreditedService) + cred)) + (nonBasePeriodUnder * 0.004)) > (143.20 * (parseFloat(personalData.totalCreditedService) + cred))
+                            ? ((aveUnderYMPE * 0.004 * (parseFloat(personalData.totalCreditedService) + cred)) + (nonBasePeriodUnder * 0.004)).toFixed(2)
+                            : (143.20 * (parseFloat(personalData.totalCreditedService) + cred)).toFixed(2)
+                    }</b>
                 <div><b>Lifetime monthly pension</b></div>
                 {generateEstimate.estimatedRetirementDate && <div className='mt-2'>Estimated pension on {generateEstimate.estimatedRetirementDate.toDateString()} at {generateEstimate.estimatedRetirementDate.getFullYear() - personalData.dob.getFullYear()}.</div>}
             </div>
@@ -86,62 +86,72 @@ export const EenerateEstimation = (props) => {
                     <b>Annual pension calculations</b>
 
                     {/* Part 1 */}
-                    <Card className="my-2">
-                        <Card.Body style={{ background: '#DCDCDC' }}>
+                    <Card className="my-2 custom-card">
+                        <Card.Body style={{ background: '#eaeaea' }}>
                             <Card.Title className='h6 fw-600'> <span className='text-danger'>Part 1:</span> <b>Base period</b></Card.Title>
                             <Card.Text>
                                 Includes your best four years of pensionable earnings and credited pension service up to December 31st of the Board-approved base year. Your best four years do not have to be consecutive.
-                                <div className='row'>
+                                <div className='row mt-5'>
                                     <div className='col-2 custom-class'>
-                                        <div className='me-5'><span className='top-label'>Average earnings up to YMPE X1.6%</span>
-                                            <div>$ {aveUnderYMPE} × 1.6% = ${(aveUnderYMPE * 0.016).toFixed(2)}</div>
+                                        <div className='me-4 inner-cal'>
+                                            <div className='calc'>$ {aveUnderYMPE} × 1.6% = ${(aveUnderYMPE * 0.016).toFixed(2)}</div>
+                                            <span className='top-label multi-line-lable'>Average earnings up to YMPE X1.6%</span>
                                         </div>
-                                        <span className='fs-3'>+</span>
+                                        <div className='fs-3 calc-sign'><i className="fa fa-plus" style={{ color: '#b43354' }}></i></div>
                                     </div>
                                     <div className='col-2 custom-class'>
-                                        <div className='me-5'><span className='top-label'>Average earnings above YMPE'× 2%</span>
-                                            <div>${aveOverYMPE} * 2% = ${(aveOverYMPE * 0.02).toFixed(2)}</div>
+                                        <div className='me-4 inner-cal'>
+                                            <div className='calc'>${aveOverYMPE} * 2% = ${(aveOverYMPE * 0.02).toFixed(2)}</div>
+                                            <span className='top-label multi-line-lable'>Average earnings above YMPE'× 2%</span>
                                         </div>
-                                        <span className='fs-3'>x</span>
+                                        <div className='fs-3 calc-sign'><i className="fa fa-plus" style={{ transform: 'rotate(45deg)', color: '#b43354' }}></i></div>
                                     </div>
                                     <div className='col-2 custom-class'>
-                                        <div className='me-5'><span className='top-label'>Credited service up to base year</span>
-                                            <div>{(parseFloat(personalData.totalCreditedService) + cred).toFixed(2)} years</div>
+                                        <div className='me-4 inner-cal'>
+                                            <div className='calc'>{(parseFloat(personalData.totalCreditedService) + cred).toFixed(2)} years</div>
+                                            <span className='top-label multi-line-lable'>Credited service up to base year</span>
                                         </div>
-                                        <span className='fs-3'>=</span>
+                                        <div className='fs-3 calc-sign'><i className="fas fa-equals" style={{ color: '#b43354' }}></i></div>
                                     </div>
                                     <div className='col-2 custom-class'>
-                                        <div className='me-5'><span className='top-label'>Credited service up to base year</span>
-                                            <div>${(((aveUnderYMPE * 0.016) + (aveOverYMPE * 0.02)) * (parseFloat(personalData.totalCreditedService) + cred)).toFixed(2)}</div>
+                                        <div className='me-4 inner-cal'>
+                                            <div className='calc calc-sum'>${(((aveUnderYMPE * 0.016) + (aveOverYMPE * 0.02)) * (parseFloat(personalData.totalCreditedService) + cred)).toFixed(2)}</div>
+                                            <span className='top-label'>Base period sum</span>
                                         </div>
                                     </div>
+                                </div>
+                                <div className='average-four-year'>
+                                    *Average best four years
                                 </div>
                             </Card.Text>
                         </Card.Body>
                     </Card>
 
                     {/* Part 2 */}
-                    <Card className="mt-4 mb-2">
-                        <Card.Body style={{ background: '#DCDCDC' }}>
+                    <Card className="mt-4 mb-2 custom-card">
+                        <Card.Body style={{ background: '#eaeaea' }}>
                             <Card.Title className='h6 fw-600'> <span className='text-danger'>Part 2:</span> <b> Non-base beriod</b></Card.Title>
                             <Card.Text>
                                 Includes your pensionable earnings every year after the base period. Your pensionable earnings are the gross earnings on which you have made TTCPP contributions.
-                                <div className='row'>
+                                <div className='row mt-5'>
                                     <div className='col-2 custom-class'>
-                                        <div className='me-5'><span className='top-label'>Sum of earnings to to YMPE x 1.6%</span>
-                                            <div>${nonBasePeriodUnder} * 1.6% = ${(nonBasePeriodUnder * 0.016).toFixed(2)}</div>
+                                        <div className='me-4 inner-cal'>
+                                            <div className='calc non-base'>${nonBasePeriodUnder} * 1.6% = ${(nonBasePeriodUnder * 0.016).toFixed(2)}</div>
+                                            <span className='top-label multi-line-lable'>Sum of earnings to to YMPE x 1.6%</span>
                                         </div>
-                                        <span className='fs-3'>+</span>
+                                        <div className='fs-3 calc-sign'><i className="fa fa-plus" style={{ color: '#b43354' }}></i></div>
                                     </div>
                                     <div className='col-2 custom-class'>
-                                        <div className='me-5'><span className='top-label'>Sum of earnings above YMPE × 2%</span>
-                                            <div>${nonBasePeriodOver} x 2% = ${(nonBasePeriodOver * 0.02).toFixed(2)}</div>
+                                        <div className='me-4 inner-cal'>
+                                            <div className='calc non-base'>${nonBasePeriodOver} x 2% = ${(nonBasePeriodOver * 0.02).toFixed(2)}</div>
+                                            <span className='top-label multi-line-lable'>Sum of earnings above YMPE × 2%</span>
                                         </div>
-                                        <span className='fs-3'>=</span>
+                                        <div className='fs-3 calc-sign'><i className="fas fa-equals" style={{ color: '#b43354' }}></i></div>
                                     </div>
                                     <div className='col-2 custom-class'>
-                                        <div className='me-5'><span className='top-label'>Non-base sum</span>
-                                            <div>${((nonBasePeriodUnder * 0.016) + (nonBasePeriodOver * 0.02)).toFixed(2)}</div>
+                                        <div className='me-4 inner-cal'>
+                                            <div className='calc non-base calc-sum'>${((nonBasePeriodUnder * 0.016) + (nonBasePeriodOver * 0.02)).toFixed(2)}</div>
+                                            <span className='top-label'>Non-base sum</span>
                                         </div>
                                     </div>
                                 </div>
@@ -149,30 +159,35 @@ export const EenerateEstimation = (props) => {
                         </Card.Body>
                     </Card>
 
-                    <div className='my-4 mx-5'>
-                        <div className='row'>
-                            <div className='col-4 d-flex justify-content-center text-center'>
-                                <div className='me-5'><span className='top-label fs-4'>Base Period</span>
-                                    <div className='fs-3 fw-600'>${(((aveUnderYMPE * 0.016) + (aveOverYMPE * 0.02)) * (parseFloat(personalData.totalCreditedService) + cred)).toFixed(2)}</div>
-                                    <div className='fw-600 fs-5'>x 0.814</div>
+                    <div className='my-5 mx-auto row annual-cal'>
+                        <div className='me-4 inner-cal-total'>
+                            <div className='calc non-base calc-sum fs-3 fw-600'>
+                                <div className='col-4'>
+                                    ${(((aveUnderYMPE * 0.016) + (aveOverYMPE * 0.02)) * (parseFloat(personalData.totalCreditedService) + cred)).toFixed(2)}
+                                    <span className='fs-3 fa-icon'><i className="fa fa-plus" style={{ color: '#b43354' }}></i></span>
+                                </div>
+                                <div className='col-4'>
+                                    ${((nonBasePeriodUnder * 0.016) + (nonBasePeriodOver * 0.02)).toFixed(2)}
+                                    <span className='fs-3 fa-icon'><i className="fas fa-equals" style={{ color: '#b43354' }}></i></span>
+                                </div>
+                                <div className='col-4'>
+                                    ${(((((aveUnderYMPE * 0.016) + (aveOverYMPE * 0.02)) * (parseFloat(personalData.totalCreditedService) + cred)) + ((nonBasePeriodUnder * 0.016) + (nonBasePeriodOver * 0.02))) * 0.814).toFixed(2)}
                                 </div>
                             </div>
-                            <div className='col-4 d-flex justify-content-center text-center'>
-                                <div className='me-5'><span className='top-label fs-4'>Non-base Period</span>
-                                    <div className='fs-3 fw-600'>${((nonBasePeriodUnder * 0.016) + (nonBasePeriodOver * 0.02)).toFixed(2)}</div>
-                                    <div className='fw-600 fs-5'>x 0.814</div>
-                                </div>
+                            <div className='top-label annual-label fs-4 row'>
+                                <span className='col-3 single-line'>Base Period</span>
+                                <span className='col-3'>Non-base Period</span>
+                                <span className='col-3'>Annual pension</span>
                             </div>
-                            <div className='col-4 d-flex justify-content-center text-center'>
-                                <div className='me-5'><span className='top-label fs-4'>Annual pension</span>
-                                    <div className='fs-3 fw-600'>${(((((aveUnderYMPE * 0.016) + (aveOverYMPE * 0.02)) * (parseFloat(personalData.totalCreditedService) + cred)) + ((nonBasePeriodUnder * 0.016) + (nonBasePeriodOver * 0.02))) * 0.814).toFixed(2)}</div>
-                                </div>
+                            <div className='bottom-label annual-label fs-4'>
+                                <span className='col-3'>x 0.814</span>
+                                <span className='col-3'>x 0.814</span>
+                                <span className='no-data col-3'></span>
                             </div>
                         </div>
-
                     </div>
 
-                    <div style={{ fontSize: '13px' }}>
+                    <div style={{ fontSize: '13px', fontStyle: 'italic' }}>
                         When retiring early with a reduced pension, two reduction factors apply. One factor applies to the base period sum, and the other applies to the non-base sum.
                         This reduction factor is calculated by comparing member age to years of service. To see how this is determined, click here
                     </div>
@@ -180,88 +195,94 @@ export const EenerateEstimation = (props) => {
                     <div className='mt-5'>
                         <b>Bridge benefit for early retirement calculations</b>
                         {/* Formula 1 */}
-                        <Card className="my-2">
-                            <Card.Body style={{ background: '#DCDCDC' }}>
+                        <Card className="my-2 custom-card">
+                            <Card.Body style={{ background: '#eaeaea' }}>
                                 <Card.Title className='h6 fw-600'>
                                     <span className='text-danger'>Formula 1</span>
                                     <div>Bridge benefit for service to the end of the base period</div>
                                 </Card.Title>
                                 <Card.Text>
-                                    <div className='row'>
-                                        <div className='col-2 custom-class'>
-                                            <div className='me-5'>
-                                                <div>0.40%</div>
+                                    <div className='row' style={{ marginTop: '40px' }}>
+                                        <div className='col-2 custom-class static-cal'>
+                                            <div className='me-3 inner-cal'>
+                                                <div className='calc calc-sum'>0.40%</div>
                                             </div>
-                                            <span className='fs-3'>x</span>
+                                            <div className='fs-3 calc-sign'><i className="fa fa-plus" style={{ transform: 'rotate(45deg)', color: '#b43354' }}></i></div>
+                                        </div>
+                                        <div className='col-2 custom-class multi-line-class formula1'>
+                                            <div className='me-4 inner-cal'>
+                                                <div className='calc'>${aveUnderYMPE}</div>
+                                                <span className='top-label multi-line-lable'>Average or your best four years of earnings up to the average YMPE in the same four years</span>
+                                            </div>
+                                            <div className='fs-3 calc-sign'><i className="fa fa-plus" style={{ transform: 'rotate(45deg)', color: '#b43354' }}></i></div>
                                         </div>
                                         <div className='col-2 custom-class'>
-                                            <div className='me-5'><span className='top-label'>Average or your best four years of earnings up to the average YMPE in the same four years
-                                            </span>
-                                                <div>${aveUnderYMPE}</div>
+                                            <div className='me-4 inner-cal'>
+                                                <div className='calc'>{(parseFloat(personalData.totalCreditedService) + cred)} years</div>
+                                                <span className='top-label multi-line-lable'>Credited service up to base year</span>
                                             </div>
-                                            <span className='fs-3'>x</span>
+                                            <div className='fs-3 calc-sign'><i className="fas fa-equals" style={{ color: '#b43354' }}></i></div>
                                         </div>
                                         <div className='col-2 custom-class'>
-                                            <div className='me-5'><span className='top-label'>Credited service up to base year</span>
-                                                <div>{(parseFloat(personalData.totalCreditedService) + cred)} years</div>
-                                            </div>
-                                            <span className='fs-3'>=</span>
-                                        </div>
-                                        <div className='col-2 custom-class'>
-                                            <div className='me-5'><span className='top-label'>End of base period results
-                                            </span>
-                                                <div>${(aveUnderYMPE * 0.004 * (parseFloat(personalData.totalCreditedService) + cred)).toFixed(2)}</div>
+                                            <div className='me-4 inner-cal'>
+                                                <div className='calc'>${(aveUnderYMPE * 0.004 * (parseFloat(personalData.totalCreditedService) + cred)).toFixed(2)}</div>
+                                                <span className='top-label multi-line-lable'>End of base period results</span>
                                             </div>
                                         </div>
                                     </div>
                                 </Card.Text>
 
-                                <Card.Title className='h6 fw-600'>
+                                <Card.Title className='h6 fw-600 mt-5'>
                                     <div>Bridge benefit for service after the base period
                                     </div>
                                 </Card.Title>
                                 <Card.Text>
-                                    <div className='row'>
-                                        <div className='col-2 custom-class'>
-                                            <div className='me-5'>
-                                                <div>0.40%</div>
+                                    <div className='row' style={{ marginTop: '30px' }}>
+                                        <div className='col-2 custom-class static-cal'>
+                                            <div className='me-3 inner-cal'>
+                                                <div className='calc calc-sum'>0.40%</div>
                                             </div>
-                                            <span className='fs-3'>x</span>
+                                            <div className='fs-3 calc-sign'><i className="fa fa-plus" style={{ transform: 'rotate(45deg)', color: '#b43354' }}></i></div>
                                         </div>
                                         <div className='col-2 custom-class'>
-                                            <div className='me-5'><span className='top-label'>Sum of the earnings up to the YMPE</span>
-                                                <div>${nonBasePeriodUnder}</div>
+                                            <div className='me-4 inner-cal'>
+                                                <div className='calc'>${nonBasePeriodUnder}</div>
+                                                <span className='top-label multi-line-lable'>Sum of the earnings up to the YMPE</span>
                                             </div>
-                                            <span className='fs-3'>=</span>
+                                            <div className='fs-3 calc-sign'><i className="fas fa-equals" style={{ color: '#b43354' }}></i></div>
                                         </div>
                                         <div className='col-2 custom-class'>
-                                            <div className='me-5'><span className='top-label'>After base period results</span>
-                                                <div>${(nonBasePeriodUnder * 0.004).toFixed(2)}</div>
+                                            <div className='me-4 inner-cal'>
+                                                <div className='calc'>${(nonBasePeriodUnder * 0.004).toFixed(2)}</div>
+                                                <span className='top-label multi-line-lable'>After base period results</span>
                                             </div>
                                         </div>
                                     </div>
                                 </Card.Text>
 
-                                <Card.Title className='h6 fw-600'>
+                                <Card.Title className='h6 fw-600 mt-5'>
                                     <div>Total bridge benefit</div>
                                 </Card.Title>
                                 <Card.Text>
-                                    <div className='row'>
+                                    <div className='row' style={{ marginTop: '30px' }}>
                                         <div className='col-2 custom-class'>
-                                            <div className='me-5'><span className='top-label'>End of base period results</span>
-                                                <div>${(aveUnderYMPE * 0.004 * (parseFloat(personalData.totalCreditedService) + cred)).toFixed(2)}</div>
+                                            <div className='me-4 inner-cal'>
+                                                <div className='calc'>${(aveUnderYMPE * 0.004 * (parseFloat(personalData.totalCreditedService) + cred)).toFixed(2)}</div>
+                                                <span className='top-label'>End of base period results</span>
                                             </div>
-                                            <span className='fs-3'>+</span>
+                                            <div className='fs-3 calc-sign'><i className="fa fa-plus" style={{ transform: 'rotate(45deg)', color: '#b43354' }}></i></div>
                                         </div>
                                         <div className='col-2 custom-class'>
-                                            <div className='me-5'><span className='top-label'>After base period results</span>
-                                                <div>${(nonBasePeriodUnder * 0.004).toFixed(2)}</div>
+                                            <div className='me-4 inner-cal'>
+                                                <div className='calc'>${(nonBasePeriodUnder * 0.004).toFixed(2)}</div>
+                                                <span className='top-label'>After base period results</span>
                                             </div>
-                                            <span className='fs-3'>=</span>
+                                            <div className='fs-3 calc-sign'><i className="fas fa-equals" style={{ color: '#b43354' }}></i></div>
                                         </div>
                                         <div className='col-2 custom-class'>
-                                            <div className='me-5'><span className='top-label'>Total Formula 1</span>
-                                                <div>${((aveUnderYMPE * 0.004 * (parseFloat(personalData.totalCreditedService) + cred)) + (nonBasePeriodUnder * 0.004)).toFixed(2)}</div>
+                                            <div className='me-4 inner-cal'>
+                                                <div className='calc'>${((aveUnderYMPE * 0.004 * (parseFloat(personalData.totalCreditedService) + cred)) + (nonBasePeriodUnder * 0.004)).toFixed(2)}</div>
+                                                <span className='top-label'>Total Formula 1</span>
                                             </div>
                                         </div>
                                     </div>
@@ -270,29 +291,31 @@ export const EenerateEstimation = (props) => {
                         </Card>
 
                         {/* Formula 2*/}
-                        <Card className="mb-2 mt-4">
-                            <Card.Body style={{ background: '#DCDCDC' }}>
+                        <Card className="mb-2 mt-4 custom-card">
+                            <Card.Body style={{ background: '#eaeaea' }}>
                                 <Card.Title className='h6 fw-600'>
                                     <span className='text-danger'>Formula 2</span>
                                     <div>Minimum bridge benefit using the minimum bridge factor of $143.20</div>
                                 </Card.Title>
                                 <Card.Text>
-                                    <div className='row'>
-                                        <div className='col-2 custom-class'>
-                                            <div className='me-5'>
-                                                <div>$143.20</div>
+                                    <div className='row' style={{ marginTop: '30px' }}>
+                                        <div className='col-2 custom-class static-cal'>
+                                            <div className='me-3 inner-cal'>
+                                                <div className='calc calc-sum'>$143.20</div>
                                             </div>
-                                            <span className='fs-3'>x</span>
+                                            <div className='fs-3 calc-sign'><i className="fa fa-plus" style={{ transform: 'rotate(45deg)', color: '#b43354' }}></i></div>
                                         </div>
                                         <div className='col-2 custom-class'>
-                                            <div className='me-5'><span className='top-label'>Total years of credited service</span>
-                                                <div>{(parseFloat(personalData.totalCreditedService) + cred).toFixed(2)} years</div>
+                                            <div className='me-4 inner-cal'>
+                                                <div className='calc'>{(parseFloat(personalData.totalCreditedService) + cred).toFixed(2)} years</div>
+                                                <span className='top-label multi-line-lable'>Total years of credited service</span>
                                             </div>
-                                            <span className='fs-3'>=</span>
+                                            <div className='fs-3 calc-sign'><i className="fas fa-equals" style={{ color: '#b43354' }}></i></div>
                                         </div>
                                         <div className='col-2 custom-class'>
-                                            <div className='me-5'><span className='top-label'>Minimum bridge factor results</span>
-                                                <div>${(143.20 * (parseFloat(personalData.totalCreditedService) + cred)).toFixed(2)}</div>
+                                            <div className='me-4 inner-cal'>
+                                                <div className='calc'>${(143.20 * (parseFloat(personalData.totalCreditedService) + cred)).toFixed(2)}</div>
+                                                <span className='top-label multi-line-lable'>Minimum bridge factor results</span>
                                             </div>
                                         </div>
                                     </div>
@@ -301,36 +324,37 @@ export const EenerateEstimation = (props) => {
                         </Card>
 
                         <div className='mt-3 fw-600 fs-5'>The formula that yields a higher result will be used for your bridge benefit which is payable to you until you reach age 65.</div>
-                        <div className='my-4 mx-5'>
-                            <div className='row'>
-                                <div className='col-4 d-flex justify-content-center text-center'>
-                                    <div className='me-5'><span className='top-label fs-4'>Formula 1</span>
-                                        <div className='fs-3 fw-600'>${((aveUnderYMPE * 0.004 * (parseFloat(personalData.totalCreditedService) + cred)) + (nonBasePeriodUnder * 0.004)).toFixed(2)}</div>
-                                    </div>
-                                    <span className='fs-3 d-flex justify-content-center text-center'>{'>'}</span>
-                                </div>
-                                <div className='col-4 d-flex justify-content-center text-center'>
-                                    <div className='me-5'><span className='top-label fs-4'>Formula 2</span>
-                                        <div className='fs-3 fw-600'>${(143.20 * (parseFloat(personalData.totalCreditedService) + cred)).toFixed(2)}</div>
-                                    </div>
-                                    <span className='fs-3 d-flex justify-content-center text-center'>=</span>
-                                </div>
-                                <div className='col-4 d-flex justify-content-center text-center'>
-                                    <div className='me-5'><span className='top-label fs-4'>Bridge Benefit</span>
-                                        <div className='fs-3 fw-600'>
+                        <div className='my-4'>
+                            <div className='my-5 mx-auto row annual-cal'>
+                                <div className='me-4 inner-cal-total'>
+                                    <div className='calc non-base calc-sum fs-3 fw-600'>
+                                        <div className='col-4'>
+                                            ${((aveUnderYMPE * 0.004 * (parseFloat(personalData.totalCreditedService) + cred)) + (nonBasePeriodUnder * 0.004)).toFixed(2)}
+                                            <span className='fs-3 fa-icon'><i className="fa fa-chevron-right" style={{ color: '#b43354' }}></i></span>
+                                        </div>
+                                        <div className='col-4'>
+                                            ${(143.20 * (parseFloat(personalData.totalCreditedService) + cred)).toFixed(2)}
+                                            <span className='fs-3 fa-icon'><i className="fas fa-equals" style={{ color: '#b43354' }}></i></span>
+                                        </div>
+                                        <div className='col-4'>
                                             $
                                             {
                                                 ((aveUnderYMPE * 0.004 * (parseFloat(personalData.totalCreditedService) + cred)) + (nonBasePeriodUnder * 0.004)) > (143.20 * (parseFloat(personalData.totalCreditedService) + cred))
-                                                ? ((aveUnderYMPE * 0.004 * (parseFloat(personalData.totalCreditedService) + cred)) + (nonBasePeriodUnder * 0.004)).toFixed(2)
-                                                : (143.20 * (parseFloat(personalData.totalCreditedService) + cred)).toFixed(2)
+                                                    ? ((aveUnderYMPE * 0.004 * (parseFloat(personalData.totalCreditedService) + cred)) + (nonBasePeriodUnder * 0.004)).toFixed(2)
+                                                    : (143.20 * (parseFloat(personalData.totalCreditedService) + cred)).toFixed(2)
                                             }
                                         </div>
+                                    </div>
+                                    <div className='top-label annual-label single-line-annual fs-4 row'>
+                                        <span className='col-3 single-line'>Formula 1</span>
+                                        <span className='col-3 single-line'>Formula 2</span>
+                                        <span className='col-3'>Bridge Benefit</span>
                                     </div>
                                 </div>
                             </div>
 
                         </div>
-                        <div style={{fontSize: '13px'}} className='mb-5'>
+                        <div style={{ fontSize: '13px' }} className='mb-5'>
                             When retiring early with a reduced pension, a reduction factor applies to whichever sum is greater between Formula 1 and Formula 2.
                             This reduction factor is calculated by comparing member age to years of service. To see how this is determined, click here.
                         </div>

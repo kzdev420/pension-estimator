@@ -1,40 +1,321 @@
 .arrow {
-    border: solid red;
-    border-width: 0 3px 3px 0;
-    display: inline-block;
-    padding: 3px;
-    margin-left: 13px;
-    cursor: pointer;
+  border: solid red;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+  margin-left: 13px;
+  cursor: pointer;
+}
+
+.down {
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+  margin-bottom: 3px;
+}
+
+.up {
+  transform: rotate(-135deg);
+  -webkit-transform: rotate(-135deg);
+}
+
+.common_button {
+  min-width: 250px !important;
+  margin-right: 30px;
+}
+
+.fw-600 {
+  font-weight: 600;
+}
+
+.top-label {
+  font-size: 12px;
+  color: #b43354;
+  font-weight: 600;
+  top: 0;
+  left: 15px;
+  padding: 0 2px;
+}
+
+.bottom-label {
+  font-size: 12px;
+  color: #b43354;
+  font-weight: 600;
+  bottom: 0;
+  left: 15px;
+  padding: 0 2px;
+}
+
+.custom-class {
+  width: 25%;
+  display: flex;
+  align-items: center;
+}
+
+.static-cal {
+  width: 15%;
+}
+
+.multi-line-class {
+  width: 28%;
+
+  .inner-cal {
+    width: 100%;
   }
 
-  .down {
-    transform: rotate(45deg);
-    -webkit-transform: rotate(45deg);
-    margin-bottom: 3px;
+  .multi-line-lable {
+    top: -8px;
+  }
+}
+
+.custom-card {
+  border: none;
+}
+
+.inner-cal {
+  position: relative;
+}
+
+.inner-cal .calc {
+  border-radius: 6px;
+  font-size: 18px;
+  padding: 10px 15px;
+  border: 2px solid #fff;
+  background: transparent;
+  outline: none;
+  text-align: center;
+  min-width: 240px;
+}
+
+.inner-cal .top-label {
+  position: absolute;
+  text-align: center;
+  left: 0px;
+  right: 0px;
+  transform: translateY(-50%);
+  pointer-events: none;
+  transition: 0.3s;
+}
+
+.calc-sum {
+  min-width: 130px !important;
+}
+
+.inner-cal-total {
+  position: relative;
+}
+
+.inner-cal-total .calc {
+  border-radius: 6px;
+  height: 100px;
+  align-items: center;
+  display: flex;
+  justify-content: space-around;
+  font-size: 18px;
+  padding: 10px 15px;
+  border: 2px solid #eaeaea;
+  background: transparent;
+  outline: none;
+  text-align: center;
+  min-width: 240px;
+
+  .fa-icon {
+    padding-left: 50px;
+    float: right;
+  }
+}
+
+.inner-cal-total .top-label {
+  display: flex;
+  position: absolute;
+  text-align: center;
+  justify-content: space-around;
+  left: 0px;
+  right: 0px;
+  transform: translateY(-50%);
+  pointer-events: none;
+  transition: 0.3s;
+
+  span {
+    background-color: #fff;
+    padding: 0px 15px;
+  }
+}
+
+.inner-cal-total .bottom-label {
+  display: flex;
+  position: absolute;
+  text-align: center;
+  justify-content: space-around;
+  left: 0px;
+  right: 0px;
+  transform: translateY(50%);
+  pointer-events: none;
+  transition: 0.3s;
+
+  span {
+    background-color: #fff;
   }
 
-  .up {
-    transform: rotate(-135deg);
-    -webkit-transform: rotate(-135deg);
+  .no-data {
+    padding: 0px !important;
+    background-color: unset;
+  }
+}
+
+.annual-cal {
+  width: 80%;
+}
+
+
+
+.average-four-year {
+  font-size: 13px;
+  font-style: italic;
+  margin-top: 5px;
+}
+
+@media only screen and (max-width: 1480px) and (min-width: 1200px) {
+  .inner-cal .calc {
+    min-width: 200px;
+  }
+}
+
+@media only screen and (max-width: 1199px) and (min-width: 994px) {
+  .inner-cal .calc {
+    min-width: 160px;
   }
 
-  .common_button{
-    min-width: 250px !important;
-    margin-right: 30px;
+  .inner-cal .multi-line-lable {
+    top: -8px;
   }
 
-  .fw-600{
-    font-weight: 600;
+  .annual-label {
+    align-items: center;
+    font-size: 1.2rem !important;
   }
 
-  .top-label{
-    font-size: 12px;
-    color: #922724;
-    font-weight: 600;
+  .single-line {
+    height: fit-content;
   }
 
-  .custom-class{
-    width: 23%;
-    display: flex;
+  .inner-cal-total .calc .fa-icon {
+    padding-left: unset;
+  }
+}
+
+@media only screen and (max-width: 993px) and (min-width: 768px) {
+  .custom-class {
+    width: 50%;
+    margin-bottom: 25px;
+  }
+
+  .annual-label {
+    font-size: 1rem !important;
     align-items: center;
   }
+
+  .inner-cal-total .calc .fa-icon {
+    padding-left: 30px;
+    float: unset;
+    font-size: 20px !important;
+  }
+}
+
+@media only screen and (max-width: 767px) and (min-width: 524px){
+  .custom-class {
+    width: 100%;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .inner-cal {
+    width: 70%;
+    margin: auto !important;
+  }
+
+  .calc-sign {
+    text-align: center;
+    margin-top: 10px;
+  }
+
+  .inner-cal-total .calc {
+    margin-top: 13px;
+    font-size: 18px !important;
+    height: fit-content;
+  }
+
+  .inner-cal-total .calc .fa-icon {
+    padding-left: unset;
+    font-size: 17px !important;
+    margin-top: 7px;
+  }
+
+  .annual-cal{
+    width: 100%
+  }
+
+  .annual-label {
+    font-size: 1rem !important;
+    align-items: center;
+  }
+
+  .multi-line-class {
+    .formula1 {
+      margin-top: 10px;
+    }
+  }
+}
+
+@media only screen and (max-width: 523px){
+  .custom-class {
+    width: 100%;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .inner-cal {
+    width: 70%;
+    margin: auto !important;
+  }
+
+  .calc-sign {
+    text-align: center;
+    margin-top: 10px;
+  }
+
+  .inner-cal-total .calc {
+    margin-top: 25px;
+    height: fit-content;
+    font-size: 14px !important;
+    padding: 10px 0px;
+  }
+
+  .inner-cal-total .calc .fa-icon {
+    padding-left: unset;
+    font-size: 13px !important;
+    margin-top: 5px;
+  }
+
+  .annual-cal{
+    width: 100%
+  }
+
+  .annual-label {
+    font-size: 1rem !important;
+    align-items: center;
+  }
+
+  .multi-line-class {
+    .formula1 {
+      margin-top: 20px;
+    }
+  }
+
+  .multi-line-lable {
+    top: 0px;
+  }
+
+  .single-line-annual{
+    top: 12px;
+  }
+}
