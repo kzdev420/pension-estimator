@@ -11,14 +11,14 @@ export const Welcome = (props) => {
       </h5>
 
       <h4 className="fw-bold mb-2">What you’ll need</h4>
-      <p className="mb-4">We recommend that you use the information provided to you in your most recent Annual Entitlement Statement (AES) to simplify your data entry and increase your accuracy. The statement provides a comprehensive summary of your membership, including annual earnings and pensionable service—two important factors that form the basis of your pension entitlement. If you do not have a copy of your AES, you can request one from <Link to="mailto:membercare@ttcpp.ca" className="fw-bold">mailto:membercare@ttcpp.ca</Link>.
+      <p className="mb-4">We recommend that you use the information provided to you in your most recent Annual Entitlement Statement (AES) to simplify your data entry and increase your accuracy. The statement provides a comprehensive summary of your membership, including annual earnings and pensionable service—two important factors that form the basis of your pension entitlement. If you do not have a copy of your AES, you can request one from <Link to="mailto:membercare@ttcpp.ca" className="fw-bold">membercare@ttcpp.ca</Link>.
       </p>
 
       <p className="fw-bold mb-2">
         Special considerations
       </p>
       <p>
-        This pension estimator is intended for active TTCPP members. If you are a deferred or postponed member, have a <span className="text-danger">retirement compensation arrangement (RCA)</span>, or are subject to a settlement due to a marriage breakdown or the end of a spousal relationship, please contact <Link to="mailto:membercare@ttcpp.ca" className="fw-bold">mailto:membercare@ttcpp.ca</Link> for your pension estimate.
+        This pension estimator is intended for active TTCPP members. If you are a deferred or postponed member, have a <span className="text-burgundy">retirement compensation arrangement (RCA)</span>, or are subject to a settlement due to a marriage breakdown or the end of a spousal relationship, please contact <Link to="mailto:membercare@ttcpp.ca" className="fw-bold">membercare@ttcpp.ca</Link> for your pension estimate.
       </p>
       <p className="mb-4">
         The pension estimator generates your potential future pension income based on a number of assumptions. Estimates are for informational purposes only and do not guarantee future pension income.
@@ -45,11 +45,11 @@ export const Welcome = (props) => {
       <Button
         variant="outline-danger"
         disabled={!agreeStatus}
-        className="me-5"
         onClick={() => setIsStatement(true)}
       >
         I have my statement
       </Button>
+      <div className="button-spacer"></div>
       <Button
         variant="outline-danger"
         disabled={!agreeStatus}

@@ -31,7 +31,10 @@
       margin-bottom: 1rem;
     }
     .step-description {
-      display: none;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 250ms ease-in, visibility 0ms ease-in 250ms;
+      padding-bottom: 20px;
     }
     &.active {
       .step-number {
@@ -43,7 +46,10 @@
         color: $active-number-color;
       }
       .step-description {
-        display: block;
+        visibility: visible;
+        opacity: 1;
+        transition: opacity 250ms ease-in, visibility 0ms ease-in 0ms;
+
       }
     }
     &.complete {

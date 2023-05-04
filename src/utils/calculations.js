@@ -1,25 +1,43 @@
+export const transferMoneyToText = (money = 0) => {
+    if (!money) return ''
+    const fixedMoney = parseFloat(money.toFixed(2));
+    if(parseInt(fixedMoney) == fixedMoney) return `$${fixedMoney.toLocaleString()}.00`;
+    if(parseInt(fixedMoney * 10) == fixedMoney * 10) return `$${fixedMoney.toLocaleString()}0`;
+    return `$${fixedMoney.toLocaleString()}`;
+}
+
+export const transferTextToMoney = (txt = '') => {
+    if(!txt) return 0;
+    return parseFloat(`${txt}`.replaceAll('$', '').replaceAll(',', ''))
+}
+
 export const calcRetirementEligibility = (tcs, dob) => {
     let curDate = new Date().getTime() / 8640000;
-    let dobTime = new Date(dob).getTime()
+    let earliestReducedRetirementDate;
+    let earliestUnReducedRetirementDate;
+    let compulsoryPensionStartDate;
 
-    const earliestReducedRetirementDate = new Date(Math.min(
-        ((29-tcs)*365.25 + curDate) * 86400000,
-        new Date(dobTime).setFullYear(new Date(dobTime).getFullYear() + 50)
-    ))
+    if(dob){
+        let dobTime = new Date(dob).getTime()
+        
+        earliestReducedRetirementDate = new Date(Math.min(
+            ((29-tcs)*365.25 + curDate) * 86400000,
+            new Date(dobTime).setFullYear(new Date(dobTime).getFullYear() + 50)
+        ))
 
-    let third = ((29-tcs) + ((((29-tcs)*365.25)+curDate)-(dobTime / 86400000))/365.25)>79.999
-                ? ((29-tcs)*365.25+curDate)*86400000
-                : ((80-(29-tcs)*365.25+curDate)/2 + (29-tcs)*365.25+curDate)*86400000
-    const earliestUnReducedRetirementDate = new Date(Math.min(
-        ((30-tcs)*365.25 + curDate)*86400000,
-        new Date(dobTime).setFullYear(new Date(dobTime).getFullYear() + 60),
-        third
-    ))
+        let third = ((29-tcs) + ((((29-tcs)*365.25)+curDate)-(dobTime / 86400000))/365.25)>79.999
+                    ? ((29-tcs)*365.25+curDate)*86400000
+                    : ((80-(29-tcs)*365.25+curDate)/2 + (29-tcs)*365.25+curDate)*86400000
+        earliestUnReducedRetirementDate = new Date(Math.min(
+            ((30-tcs)*365.25 + curDate)*86400000,
+            new Date(dobTime).setFullYear(new Date(dobTime).getFullYear() + 60),
+            third
+        ))
 
-    const compulsoryPensionStartDate = new Date(new Date(dobTime).getFullYear() + 71, 11, 30)
+        compulsoryPensionStartDate = new Date(new Date(dobTime).getFullYear() + 71, 11, 30)
 
-    const normalRetirmentDate = new Date(dobTime).setFullYear(new Date(dobTime).getFullYear() + 60)
-
+        const normalRetirmentDate = new Date(dobTime).setFullYear(new Date(dobTime).getFullYear() + 60)
+    }
     return { earliestReducedRetirementDate, earliestUnReducedRetirementDate, compulsoryPensionStartDate }
 }
 

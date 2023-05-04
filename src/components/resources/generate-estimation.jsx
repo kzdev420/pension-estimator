@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import React, { useState } from 'react';
 import { Form, Button, Collapse, Card } from "react-bootstrap";
 
@@ -38,7 +39,7 @@ export const EenerateEstimation = (props) => {
 
     return (
         <div className={`container ${showEstimation ? 'd-none' : ''}`}>
-            <div>
+            <div className="lead">
                 Nicely done! Your estimated monthly pension is indicated below. These figures are subject to change if updated information is provided.
             </div>
             <div className='mt-4'>
@@ -70,16 +71,19 @@ export const EenerateEstimation = (props) => {
             </div>
             <div className='mt-4'>
                 <b className='fs-2 text-danger'>$
-                    {
+                    { customBaseError ?  "-.--":
+                    
                         ((aveUnderYMPE * 0.004 * (parseFloat(personalData.totalCreditedService) + cred)) + (nonBasePeriodUnder * 0.004)) > (143.20 * (parseFloat(personalData.totalCreditedService) + cred))
                             ? ((aveUnderYMPE * 0.004 * (parseFloat(personalData.totalCreditedService) + cred)) + (nonBasePeriodUnder * 0.004)).toFixed(2)
                             : (143.20 * (parseFloat(personalData.totalCreditedService) + cred)).toFixed(2)
-                    }</b>
+                    
+                    }
+                </b>
                 <div><b>Lifetime monthly pension</b></div>
-                {generateEstimate.estimatedRetirementDate && <div className='mt-2'>Estimated pension on {generateEstimate.estimatedRetirementDate.toDateString()} at {generateEstimate.estimatedRetirementDate.getFullYear() - personalData.dob.getFullYear()}.</div>}
+                {generateEstimate.estimatedRetirementDate && <div className='mt-2'>Estimated pension on {generateEstimate.estimatedRetirementDate.toLocaleDateString('en-ca',{ year: 'numeric', month: 'long', day: 'numeric' })} at age {generateEstimate.estimatedRetirementDate.getFullYear() - personalData.dob.getFullYear()}.</div>}
             </div>
             <div className='my-5'>
-                <b className='fs-5'>More Details <span><i className={`arrow ${moreDetails ? 'up' : 'down'}`} onClick={() => showMoreDetails()}></i></span></b>
+                <strong className='fs-5' onClick={() => showMoreDetails()}>More Details <span><i className={`arrow ${moreDetails ? 'up' : 'down'}`} ></i></span></strong>
             </div>
             <Collapse in={moreDetails}>
                 <div id="example-collapse-text">
@@ -87,7 +91,7 @@ export const EenerateEstimation = (props) => {
 
                     {/* Part 1 */}
                     <Card className="my-2 custom-card">
-                        <Card.Body style={{ background: '#eaeaea' }}>
+                        <Card.Body>
                             <Card.Title className='h6 fw-600'> <span className='text-danger'>Part 1:</span> <b>Base period</b></Card.Title>
                             <Card.Text>
                                 Includes your best four years of pensionable earnings and credited pension service up to December 31st of the Board-approved base year. Your best four years do not have to be consecutive.
@@ -129,7 +133,7 @@ export const EenerateEstimation = (props) => {
 
                     {/* Part 2 */}
                     <Card className="mt-4 mb-2 custom-card">
-                        <Card.Body style={{ background: '#eaeaea' }}>
+                        <Card.Body>
                             <Card.Title className='h6 fw-600'> <span className='text-danger'>Part 2:</span> <b> Non-base beriod</b></Card.Title>
                             <Card.Text>
                                 Includes your pensionable earnings every year after the base period. Your pensionable earnings are the gross earnings on which you have made TTCPP contributions.
@@ -187,16 +191,18 @@ export const EenerateEstimation = (props) => {
                         </div>
                     </div>
 
-                    <div style={{ fontSize: '13px', fontStyle: 'italic' }}>
-                        When retiring early with a reduced pension, two reduction factors apply. One factor applies to the base period sum, and the other applies to the non-base sum.
-                        This reduction factor is calculated by comparing member age to years of service. To see how this is determined, click here
+                    <div style={{ fontSize: '13px'}}>
+                        <em>
+                            * When retiring early with a reduced pension, two reduction factors apply. One factor applies to the base period sum, and the other applies to the non-base sum.
+                            This reduction factor is calculated by comparing member age to years of service. To see how this is determined, <Link to="https://ttcpp.ca/membership/plan-features/" className="fw-bold">click here</Link>.
+                        </em>
                     </div>
 
                     <div className='mt-5'>
                         <b>Bridge benefit for early retirement calculations</b>
                         {/* Formula 1 */}
                         <Card className="my-2 custom-card">
-                            <Card.Body style={{ background: '#eaeaea' }}>
+                            <Card.Body>
                                 <Card.Title className='h6 fw-600'>
                                     <span className='text-danger'>Formula 1</span>
                                     <div>Bridge benefit for service to the end of the base period</div>
@@ -292,7 +298,7 @@ export const EenerateEstimation = (props) => {
 
                         {/* Formula 2*/}
                         <Card className="mb-2 mt-4 custom-card">
-                            <Card.Body style={{ background: '#eaeaea' }}>
+                            <Card.Body>
                                 <Card.Title className='h6 fw-600'>
                                     <span className='text-danger'>Formula 2</span>
                                     <div>Minimum bridge benefit using the minimum bridge factor of $143.20</div>
@@ -355,20 +361,22 @@ export const EenerateEstimation = (props) => {
 
                         </div>
                         <div style={{ fontSize: '13px' }} className='mb-5'>
-                            When retiring early with a reduced pension, a reduction factor applies to whichever sum is greater between Formula 1 and Formula 2.
-                            This reduction factor is calculated by comparing member age to years of service. To see how this is determined, click here.
+                            <em>* When retiring early with a reduced pension, a reduction factor applies to whichever sum is greater between Formula 1 and Formula 2.
+                            This reduction factor is calculated by comparing member age to years of service. To see how this is determined, <Link to="https://ttcpp.ca/membership/plan-features/" className="fw-bold">click here</Link>.</em>
                         </div>
 
                     </div>
                 </div>
             </Collapse>
             <div>
-                <Button variant="outline-danger common_button mr-5">
+                <Button variant="outline-danger common_button mr-5" onClick={() => window.print()}>
                     Print
                 </Button>
+                <div className="button-spacer"></div>
                 <Button variant="outline-danger common_button">
                     Save Pdf
                 </Button>
+                <div className="button-spacer"></div>
                 <Button onClick={generate} variant="outline-danger common_button">
                     Return to input
                 </Button>

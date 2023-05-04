@@ -46,9 +46,7 @@ export const OneStepComponent = (props) => {
               className="step-title"
               dangerouslySetInnerHTML={{__html: title}}
             />
-            <div className="step-description">
-              {description}
-            </div>
+            <div className="step-description fade" dangerouslySetInnerHTML={{__html: description}} />
           </Col>
           <Col lg={{span:4, offset: 1}}>
             {children}

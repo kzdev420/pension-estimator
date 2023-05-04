@@ -1,6 +1,7 @@
 import { Form } from "react-bootstrap";
 import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
+import { EarningsInput } from "../input/earnings";
 
 const currentYear = (new Date()).getFullYear();
 
@@ -17,11 +18,9 @@ export const NonBaseYearEarnings = (props) => {
     <>
       <Form.Group className="mb-3">
         <Form.Label>{currentYear - 1} pensionable earnings</Form.Label>
-        <Form.Control
-          type="number"
-          placeholder="$00,000.00"
+        <EarningsInput
           value={nonBaseYearEarnings.currentPensionableEarnings}
-          onChange={(e) => handleChange('currentPensionableEarnings', e.target.value)}
+          onChange={(value) => handleChange('currentPensionableEarnings', value)}
           onFocus={handleFocus}
           isInvalid={error.currentPensionableEarnings}
           disabled={disabled}
@@ -32,11 +31,9 @@ export const NonBaseYearEarnings = (props) => {
       </Form.Group>
       <Form.Group className="mb-3">
         <Form.Label>Estimated {currentYear} pensionable earnings</Form.Label>
-        <Form.Control
-          type="number"
-          placeholder="$00,000.00"
+        <EarningsInput
           value={nonBaseYearEarnings.estimatedYearPensionableEarnings}
-          onChange={(e) => handleChange('estimatedYearPensionableEarnings', e.target.value)}
+          onChange={(value) => handleChange('estimatedYearPensionableEarnings', value)}
           onFocus={handleFocus}
           isInvalid={error.estimatedYearPensionableEarnings}
           disabled={disabled}

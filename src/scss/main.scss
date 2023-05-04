@@ -6,3 +6,25 @@ body {
   color: black;
   --bs-nav-link-font-weight: 700;
 }
+
+.button-spacer{
+  width:3em;
+  display: inline-block;
+  @media only screen and (max-width: 993px) {
+    display: block;  
+    height: 10px;
+  }
+}
+
+.text-burgundy{
+  color: $red-700;
+}
+
+.fade {
+	-webkit-transition: opacity 600ms, visibility 600ms;
+  transition: opacity 600ms, visibility 600ms;
+}
+
+.card-body{
+  background-color: #eaeaea;
+}

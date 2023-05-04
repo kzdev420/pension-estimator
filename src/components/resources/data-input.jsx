@@ -63,6 +63,8 @@ export const DataInput = () => {
   const [baseYearEarnings, setBaseYearEarnings] = useState(initBaseYearEarnings);
   const [errorBYE, setErrorBYE] = useState(new Array(4).fill({}));
   const updateBaseYearEarnings = (index, variable, value) => {
+
+    console.log({ index, variable, value });
     const newData = baseYearEarnings
     newData[index][variable] = value;
     newData[index] = {
@@ -81,15 +83,13 @@ export const DataInput = () => {
         }
         if (baseYearEarnings.some(({ year }, i) => i !== index && year === value)) {
           errMessage = 'All years must be unique';
-          newError[index][variable] = errMessage;
         } else if (baseYearEarnings.indexOf(({ year }) => year === value)) {
           errMessage = '';
-          newError[index][variable] = errMessage;
-          for (let i = 0; i < baseYearEarnings.length - 1; i++) {
-            for (let j = i + 1; j < baseYearEarnings.length; j++) {
+          for (let i = 0; i < baseYearEarnings.length; i++) {
+            for (let j = 0; j < baseYearEarnings.length; j++) {
+              if(i == j) continue;
               if (baseYearEarnings[i]['year'] !== '' && baseYearEarnings[i]['year'] === baseYearEarnings[j]['year']) {
-                errMessage = 'All years must be unique';
-                newError[j][variable] = errMessage;
+                newError[j][variable] = 'All years must be unique';
               } else {
                 newError[j][variable] = '';
               }
@@ -100,11 +100,11 @@ export const DataInput = () => {
       case 'earning':
         if (value < 0 || value > MAX_EARNING) {
           errMessage = 'Cannot be negative, must be less than 500,000';
-          newError[index][variable] = errMessage;
         }
         break;
       default:
     }
+    newError[index][variable] = errMessage;
     setErrorBYE(newError);
   };
 
@@ -112,7 +112,7 @@ export const DataInput = () => {
   useEffect(() => {
     let curStep = 0;
     baseYearEarnings.forEach((item, index) => {
-      if (item.year && item.earning && !errorBYE[index]?.year && !errorBYE?.earning) curStep++;
+      if (item.year && item.earning && !errorBYE[index]?.year && !errorBYE[index]?.earning) curStep++;
     })
     setStepBYE(curStep);
   }, [baseYearEarnings, errorBYE]);
@@ -354,7 +354,7 @@ export const DataInput = () => {
           nonBaseYearEarnings={nonBaseYearEarnings}
           handleChange={updateNonBaseYearEarnings}
           handleFocus={updateStatusNBYE}
-          disabled={stepBYE != 4}
+          disabled={stepPI!=3 || stepBYE!=4}
           error={errorNBYE}
         />
       </OneStepComponent>
@@ -371,7 +371,7 @@ export const DataInput = () => {
           retirementEligibility={retirementEligibility}
           handleChange={updateRetirementEligibility}
           handleFocus={updateStatusRE}
-          disabled={stepNBYE != 3}
+          disabled={stepPI!=3 || stepBYE!=4 || stepNBYE!=3}
           error={errorRE}
         />
       </OneStepComponent>
@@ -392,7 +392,7 @@ export const DataInput = () => {
           handleBlur={handleBlur}
           isFocus={isFocus}
           generate={() => generate(false)}
-          disabled={stepNBYE != 3}
+          disabled={stepPI!=3 || stepBYE!=4 || stepNBYE!=3}
           error={errorGE}
         />
       </OneStepComponent>

@@ -6,9 +6,18 @@
   font-weight: bold;
 }
 
+
 .btn-outline-danger {
   --bs-btn-hover-color: white;
+  --bs-btn-active-color: white;
+
   min-width: 400px;
+
+  @media only screen and (max-width: 523px){
+    min-width: auto;
+    width: 100%;
+  }
+
   &:disabled {
     opacity: 1;
     color: #676767;
@@ -19,6 +28,8 @@
   --bs-btn-color: white;
   --bs-btn-hover-bg: white;
   --bs-btn-hover-color: red;
+  --bs-btn-active-color: white;
+  
   &:disabled {
     opacity: 1;
     color: rgba(255, 255, 255, 0.96);

@@ -40,7 +40,7 @@ export const GenerateEstimate = (props) => {
       </Form.Group>
       <Button
         variant="danger"
-        disabled={disabled}
+        disabled={disabled || error?.estimatedRetirementDate || !generateEstimate.estimatedRetirementDate}
         onClick={generate}
       >
         Generate Estimate

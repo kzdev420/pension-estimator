@@ -1,4 +1,5 @@
 import { Form } from "react-bootstrap";
+import { EarningsInput } from "../input/earnings";
 
 export const BaseYearEarnings = (props) => {
   const {
@@ -31,18 +32,16 @@ export const BaseYearEarnings = (props) => {
           </Form.Group>
           <Form.Group className="mb-3">
             {index === 0 && <Form.Label>Pensionable earnings</Form.Label>}
-            <Form.Control
-              type="number"
-              placeholder="$00,000.00"
+            <EarningsInput
               className="medium"
               min="0"
               value={earning.earning}
-              onChange={(e) => handleChange(index, 'earning', e.target.value)}
+              onChange={(value) => handleChange(index, 'earning', value)}
               onFocus={handleFocus}
               isInvalid={error[index]?.earning}
               disabled={disabled}
             />
-            <Form.Control.Feedback type="invalid" className="base-year-check">
+            <Form.Control.Feedback type="invalid">
               {error[index]?.earning}
             </Form.Control.Feedback>
           </Form.Group>
