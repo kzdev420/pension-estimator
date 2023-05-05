@@ -28,3 +28,21 @@ body {
 .card-body{
   background-color: #eaeaea;
 }
+
+.header-home a, .header-resources a{
+  text-decoration: none;
+  color: #6c757d;
+  font-weight: 600;
+  font-size: 18px;
+
+  &:hover{
+    text-decoration: underline;
+  }
+}
+
+.breadcrumb-item.active{
+  color: #6c757d !important;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 18px;
+}

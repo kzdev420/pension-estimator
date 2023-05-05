@@ -87,7 +87,7 @@ export const DataInput = () => {
           errMessage = '';
           for (let i = 0; i < baseYearEarnings.length; i++) {
             for (let j = 0; j < baseYearEarnings.length; j++) {
-              if(i == j) continue;
+              if (i == j) continue;
               if (baseYearEarnings[i]['year'] !== '' && baseYearEarnings[i]['year'] === baseYearEarnings[j]['year']) {
                 newError[j][variable] = 'All years must be unique';
               } else {
@@ -193,6 +193,7 @@ export const DataInput = () => {
       ...personalInformation
     };
     newData[variable] = value;
+    const newError = JSON.parse(JSON.stringify(errorPI));
     setPersonalInformation(newData);
     setFocus(false)
     switch (variable) {
@@ -204,13 +205,25 @@ export const DataInput = () => {
         }
         break;
       case 'totalCreditedService':
-        if (personalInformation.totalContinuousService && value > personalInformation.totalContinuousService - 0.5) {
+        if (personalInformation.totalContinuousService && parseFloat(value).toFixed(2) > parseFloat(personalInformation.totalContinuousService).toFixed(2) - 0.5) {
           errMessage = 'Must be less than continuous service - .5 years.';
+        } else {
+          errMessage = '';
+          if (value && parseFloat(personalInformation.totalCreditedService).toFixed(2) < parseFloat(value).toFixed(2) - 0.5) {
+            errMessage = '';
+            variable = 'totalContinuousService';
+          }
         }
         break;
       case 'totalContinuousService':
-        if (value && personalInformation.totalCreditedService > value - 0.5) {
+        if (value && parseFloat(personalInformation.totalCreditedService).toFixed(2) > parseFloat(value).toFixed(2) - 0.5) {
           errMessage = 'Must be more than credit service - .5 years.';
+        } else {
+          errMessage = '';
+          if (personalInformation.totalContinuousService && parseFloat(value).toFixed(2) < parseFloat(personalInformation.totalContinuousService).toFixed(2) - 0.5) {
+            errMessage = '';
+            variable = 'totalCreditedService';
+          }
         }
         break;
       default:
@@ -354,7 +367,7 @@ export const DataInput = () => {
           nonBaseYearEarnings={nonBaseYearEarnings}
           handleChange={updateNonBaseYearEarnings}
           handleFocus={updateStatusNBYE}
-          disabled={stepPI!=3 || stepBYE!=4}
+          disabled={stepPI != 3 || stepBYE != 4}
           error={errorNBYE}
         />
       </OneStepComponent>
@@ -371,7 +384,7 @@ export const DataInput = () => {
           retirementEligibility={retirementEligibility}
           handleChange={updateRetirementEligibility}
           handleFocus={updateStatusRE}
-          disabled={stepPI!=3 || stepBYE!=4 || stepNBYE!=3}
+          disabled={stepPI != 3 || stepBYE != 4 || stepNBYE != 3}
           error={errorRE}
         />
       </OneStepComponent>
@@ -392,7 +405,7 @@ export const DataInput = () => {
           handleBlur={handleBlur}
           isFocus={isFocus}
           generate={() => generate(false)}
-          disabled={stepPI!=3 || stepBYE!=4 || stepNBYE!=3}
+          disabled={stepPI != 3 || stepBYE != 4 || stepNBYE != 3}
           error={errorGE}
         />
       </OneStepComponent>

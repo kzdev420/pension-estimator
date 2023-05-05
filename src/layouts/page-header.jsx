@@ -6,8 +6,8 @@ const PageHeader = (props) => {
     <div className="d-flex">
       <div className="page-header p-4">
         <Breadcrumb>
-          <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
-          <Breadcrumb.Item active>{label}</Breadcrumb.Item>
+          <Breadcrumb.Item href="/" className="header-home">Home</Breadcrumb.Item>
+          <Breadcrumb.Item active className="header-resources">{label}</Breadcrumb.Item>
         </Breadcrumb>
         <h2 className="fw-bold text-danger">Pension Estimator</h2>
       </div>
