@@ -21,7 +21,7 @@ export const OneStepComponent = (props) => {
     bars.push(
       <div
         key={i}
-        className={`left-line ${current > i + 1 || status === 2 ? 'active' : ''}`}
+        className={`left-line ${current > i || status === 2 ? 'active' : ''}`}
         style={
           {
             height: `${oneHeight}%`,
